@@ -28,10 +28,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Use JSON parser for all routes except the Razorpay webhook which requires raw body
+// Use JSON parser for all routes except webhook routes which require raw body
 const jsonBodyParser = express.json();
 app.use((req, res, next) => {
-  if (req.originalUrl && req.originalUrl.startsWith('/api/v1/webhooks/razorpay')) return next();
+  if (req.originalUrl && (req.originalUrl.startsWith('/api/v1/webhooks/razorpay') || req.originalUrl.startsWith('/api/v1/webhooks/revenuecat'))) return next();
   return jsonBodyParser(req, res, next);
 });
 
