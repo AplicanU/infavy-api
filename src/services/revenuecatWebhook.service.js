@@ -208,15 +208,25 @@ async function handleEvent(event) {
   const type = (event.type || event.event || (event?.data && event.data.type) || '').toString();
   const payload = event.data || event.payload || event || {};
 
-  console.log('[revenuecatWebhook.service] handling event', type, event.event_id || event.id || '(no id)');
+  // Resolve a robust event id from several possible locations
+  const eventId = event?.event_id || event?.id || event?.data?.id || payload?.id || payload?.transaction_id || payload?.original_transaction_id || null;
+  console.log('[revenuecatWebhook.service] handling event', type, eventId || '(no id)');
 
   // Try to handle common cases: initial purchase, renewal, cancellation
   try {
-    // Initial purchase or one-off purchase: try to create subscription
+    // Flat TEST events or payloads that include top-level purchase fields (e.g. product_id + app_user_id)
+    if (type === 'TEST' || (payload?.product_id && (payload?.app_user_id || event?.app_user_id))) {
+      const purchase = payload || event || {};
+      const res = await createSubscriptionFromRevenuecat(purchase);
+      console.log('[revenuecatWebhook.service] test/flat purchase processed', { eventId, userId: purchase?.app_user_id || null });
+      return res;
+    }
+
+    // Initial purchase or one-off purchase: try to create subscription when purchase object exists
     if (/initial_purchase|INITIAL_PURCHASE|INITIAL_PURCHASE_EVENT|INITIAL_PURCHASED|FIRST_PURCHASE/i.test(type) || payload?.purchase) {
       const purchase = payload?.purchase || payload?.transaction || payload || {};
       const res = await createSubscriptionFromRevenuecat(purchase);
-      console.log('[revenuecatWebhook.service] initial purchase processed', { eventId: event.event_id || event.id, userId: purchase?.app_user_id || null });
+      console.log('[revenuecatWebhook.service] initial purchase processed', { eventId, userId: purchase?.app_user_id || null });
       return res;
     }
 
@@ -225,11 +235,10 @@ async function handleEvent(event) {
       const appUserId = event?.app_user_id || payload?.app_user_id || payload?.subscriber?.app_user_id || null;
       const processorId = payload?.transaction?.id || payload?.transaction_id || payload?.purchase?.id || null;
       if (appUserId) {
-        // try to map appUserId to internal user id
         const uid = await getUserIdByAppUserId(appUserId);
         if (uid) {
           const ok = await extendSubscriptionByUserId(uid, 30, processorId);
-          console.log('[revenuecatWebhook.service] renewal processed', { eventId: event.event_id || event.id, appUserId, uid, skipped: !ok });
+          console.log('[revenuecatWebhook.service] renewal processed', { eventId, appUserId, uid, skipped: !ok });
           return ok;
         }
       }
@@ -241,7 +250,7 @@ async function handleEvent(event) {
       const revSubId = payload?.subscription_id || payload?.revenuecat_subscription_id || payload?.product_id || null;
       if (revSubId) {
         const ok = await cancelSubscriptionsByRevenuecatSubscriptionId(revSubId);
-        console.log('[revenuecatWebhook.service] cancellation processed', { eventId: event.event_id || event.id, revSubId, skipped: !ok });
+        console.log('[revenuecatWebhook.service] cancellation processed', { eventId, revSubId, skipped: !ok });
         return ok;
       }
 
@@ -256,7 +265,7 @@ async function handleEvent(event) {
           const ops = [];
           q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', updatedAt: now })));
           await Promise.all(ops);
-          console.log('[revenuecatWebhook.service] cancellation processed by user', { eventId: event.event_id || event.id, uid });
+          console.log('[revenuecatWebhook.service] cancellation processed by user', { eventId, uid });
           return true;
         }
       }
