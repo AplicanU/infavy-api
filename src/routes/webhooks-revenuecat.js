@@ -27,8 +27,8 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
-  // RevenueCat event id field may vary; try a few common keys
-  const eventId = event && (event.event_id || event.id || event.data?.id) ? (event.event_id || event.id || event.data?.id) : null;
+  // RevenueCat event id field may vary; try common keys
+  const eventId = event?.event_id || event?.id || event?.data?.id || event?.data?.subscriber?.original_transaction_id || null;
   const userId = event?.app_user_id || event?.data?.app_user_id || event?.data?.subscriber?.app_user_id || null;
   console.log('[webhooks.revenuecat] incoming event', event?.type || event?.event || '(unknown)', eventId || '(no id)', 'userId=', userId);
 
