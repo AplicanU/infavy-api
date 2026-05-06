@@ -4,10 +4,21 @@ const { getBlockedChannelIds } = require('../lib/blockedChannels');
 
 const router = express.Router();
 
-// GET / - list published videos with pagination and total count
-// Query params:
-// - page (1-based, default 1)
-// - perPage (default 20, max 100)
+/**
+ * @openapi
+ * /api/v1/videos:
+ *   get:
+ *     summary: List published videos
+ *     parameters:
+ *       - in: query
+ *         name: uid
+ *         schema:
+ *           type: string
+ *
+ * /api/v1/videos/report:
+ *   post:
+ *     summary: Report a video
+ */
 router.get('/', async (req, res) => {
   try {
     const admin = initFirebaseAdmin();

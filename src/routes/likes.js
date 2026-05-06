@@ -11,9 +11,20 @@ function makeLikeDocId(userId, videoId, profileId) {
   return encodeURIComponent(u) + '|' + encodeURIComponent(v) + '|' + encodeURIComponent(p);
 }
 
-// POST /like
-// Body: { userId?, profileId?, videoId }
-// Auth: accepts explicit userId or Authorization: Bearer <idToken>
+/**
+ * @openapi
+ * /api/v1/likes/like:
+ *   post:
+ *     summary: Like a video
+ *
+ * /api/v1/likes/unlike:
+ *   post:
+ *     summary: Unlike a video
+ *
+ * /api/v1/likes/list:
+ *   get:
+ *     summary: List liked videos for a user
+ */
 router.post('/like', async (req, res) => {
   const admin = initFirebaseAdmin();
   if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });

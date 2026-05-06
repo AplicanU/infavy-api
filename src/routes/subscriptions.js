@@ -3,9 +3,20 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 
 const router = express.Router();
 
-// POST /subscribe
-// Body: { userId?, profileId?, channelId }
-// Auth: accepts explicit userId or Authorization: Bearer <idToken>
+/**
+ * @openapi
+ * /api/v1/subscriptions/subscribe:
+ *   post:
+ *     summary: Subscribe a user to a channel
+ *
+ * /api/v1/subscriptions/unsubscribe:
+ *   post:
+ *     summary: Unsubscribe a user from a channel
+ *
+ * /api/v1/subscriptions/list:
+ *   get:
+ *     summary: List subscriptions for a user
+ */
 router.post('/subscribe', async (req, res) => {
   const admin = initFirebaseAdmin();
   if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });

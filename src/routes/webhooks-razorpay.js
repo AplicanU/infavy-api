@@ -5,6 +5,12 @@ const razorpayService = require('../services/razorpayWebhook.service');
 const router = express.Router();
 
 /**
+ * @openapi
+ * /api/v1/webhooks/razorpay:
+ *   post:
+ *     summary: Razorpay webhook endpoint (raw body expected)
+ */
+/**
  * Razorpay webhook endpoint.
  * Important: use express.raw for this route only so that we can verify signature against raw body
  */

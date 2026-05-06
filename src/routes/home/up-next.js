@@ -3,6 +3,19 @@ const router = express.Router();
 const initFirebaseAdmin = require('../../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../../lib/blockedChannels');
 
+/**
+ * @openapi
+ * /api/v1/home/up-next:
+ *   get:
+ *     summary: Get up-next video suggestions
+ *     parameters:
+ *       - in: query
+ *         name: videoId
+ *         schema:
+ *           type: string
+ */
+
+
 // GET /api/v1/home/next
 // Query params:
 // - playbackId or videoId : identify the current video to exclude
@@ -45,13 +58,16 @@ router.get('/', async (req, res) => {
       }
     });
 
-    // Load channels map to resolve creator names
+    // Load channels map to resolve creator names and logos
     let channelMap = {};
     try {
       const chSnap = await db.collection('channels').get();
       chSnap.forEach((c) => {
         const d = c.data();
-        channelMap[c.id] = d?.name || d?.owner || null;
+        channelMap[c.id] = {
+          name: d?.name || d?.owner || null,
+          logo: d?.logoURL || d?.logo || d?.avatarURL || d?.avatar || d?.photoURL || null,
+        };
       });
     } catch (e) {
       // ignore
@@ -65,9 +81,11 @@ router.get('/', async (req, res) => {
         id: it.id,
         videoId: it.videoId || null,
         title: it.title || it.shortDescription || 'Untitled',
+        description: it.description || it.longDescription || it.shortDescription || null,
         playbackId: playback,
         thumbnail,
-        creatorName: it.creatorName || channelMap[it.channelId] || it.creatorId || it.channelId || 'Unknown',
+        creatorName: it.creatorName || (channelMap[it.channelId] && channelMap[it.channelId].name) || it.creatorId || it.channelId || 'Unknown',
+        channelLogo: (channelMap[it.channelId] && channelMap[it.channelId].logo) || null,
         channelId: it.channelId || null,
       };
     });
@@ -115,9 +133,11 @@ router.get('/', async (req, res) => {
             id: it.id,
             videoId: it.videoId || null,
             title: it.title || it.shortDescription || 'Untitled',
+            description: it.description || it.longDescription || it.shortDescription || null,
             playbackId: playback,
             thumbnail,
-            creatorName: it.creatorName || channelMap[it.channelId] || it.creatorId || it.channelId || 'Unknown',
+            creatorName: it.creatorName || (channelMap[it.channelId] && channelMap[it.channelId].name) || it.creatorId || it.channelId || 'Unknown',
+            channelLogo: (channelMap[it.channelId] && channelMap[it.channelId].logo) || null,
             channelId: it.channelId || null,
           };
         });

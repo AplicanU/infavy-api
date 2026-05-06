@@ -3,6 +3,12 @@ const router = express.Router();
 const initFirebaseAdmin = require('../../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../../lib/blockedChannels');
 
+/**
+ * @openapi
+ * /api/v1/home/hero:
+ *   get:
+ *     summary: Homepage hero featured videos
+ */
 // GET /api/v1/home/hero
 // Returns an ordered list of featured videos with joined video and channel metadata
 router.get('/', async (req, res) => {
