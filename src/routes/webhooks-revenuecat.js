@@ -1,5 +1,4 @@
 const express = require('express');
-const verifySignature = require('../lib/revenuecatSignature');
 const revenuecatService = require('../services/revenuecatWebhook.service');
 
 const router = express.Router();
@@ -15,24 +14,9 @@ const router = express.Router();
  * Important: use express.raw for this route only so that we can verify signature against raw body
  */
 router.post('/', express.raw({ type: 'application/json' }), async (req, res) => {
-  const secret = process.env.REVENUECAT_WEBHOOK_SECRET;
-  const signature = req.get('x-revenuecat-signature') || req.get('revenuecat-signature');
-
-  if (!signature) {
-    console.warn('[webhooks.revenuecat] missing signature header');
-    // If no secret is configured, we still allow processing but warn.
-    if (!secret) {
-      console.warn('[webhooks.revenuecat] no webhook secret configured, proceeding without verification');
-    } else {
-      return res.status(400).json({ error: 'Missing signature' });
-    }
-  }
-
+  // Intentionally skip signature verification for RevenueCat webhooks.
+  // The raw body is still required so we parse it manually to verify JSON.
   const rawBody = req.body;
-  if (secret && signature && !verifySignature(rawBody, signature, secret)) {
-    console.warn('[webhooks.revenuecat] invalid signature');
-    return res.status(400).json({ error: 'Invalid signature' });
-  }
 
   let event;
   try {
