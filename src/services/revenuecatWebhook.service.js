@@ -214,12 +214,13 @@ async function cancelSubscriptionsByRevenuecatSubscriptionId(revSubId) {
  */
 async function handleEvent(event) {
   if (!event) throw new Error('Invalid event object');
-  const type = (event.type || event.event || (event?.data && event.data.type) || '').toString();
-  const payload = event.data || event.payload || event || {};
+  // Prefer inner payload if present (some webhook envelopes use `event`)
+  const payload = event.data || event.payload || event.event || event || {};
+  const type = (payload.type || payload.event || payload?.data?.type || '').toString();
 
-  // Resolve a robust event id from several possible locations
-  const eventId = event?.event_id || event?.id || event?.data?.id || payload?.id || payload?.transaction_id || payload?.original_transaction_id || null;
-  console.log('[revenuecatWebhook.service] handling event', type, eventId || '(no id)');
+  // Resolve a robust event id from payload or top-level
+  const eventId = payload?.event_id || payload?.id || payload?.data?.id || event?.event_id || event?.id || payload?.transaction_id || payload?.original_transaction_id || null;
+  console.log('[revenuecatWebhook.service] handling event', type || '(no type)', eventId || '(no id)', 'payloadKeys=', Object.keys(payload || {}));
 
   // Try to handle common cases: initial purchase, renewal, cancellation
   try {
