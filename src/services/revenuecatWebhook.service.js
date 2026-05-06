@@ -65,17 +65,26 @@ async function createSubscriptionFromRevenuecat(purchase) {
   const admin = require('firebase-admin');
   const now = admin.firestore.Timestamp.now();
 
-  // Try to resolve userId from purchase/app_user_id
-  let userId = purchase?.app_user_id || purchase?.appUserId || purchase?.userId || null;
-  if (!userId) {
-    const appUserId = purchase?.app_user_id || purchase?.appUserId || null;
-    if (appUserId) {
-      try {
-        userId = await getUserIdByAppUserId(appUserId);
-      } catch (e) {
-        console.error('[revenuecatWebhook.service] failed to lookup user by app_user_id', e);
-      }
+  // Resolve internal userId. Prefer mapping from RevenueCat `app_user_id` to internal uid.
+  let userId = null;
+  const appUserId = purchase?.app_user_id || purchase?.appUserId || null;
+  if (appUserId) {
+    try {
+      userId = await getUserIdByAppUserId(appUserId);
+    } catch (e) {
+      console.error('[revenuecatWebhook.service] failed to lookup user by app_user_id', e);
     }
+  }
+
+  // If mapping not found, allow explicit internal user id provided in the payload
+  if (!userId) {
+    // If there's no mapping, `app_user_id` may already be the internal uid.
+    if (appUserId) userId = appUserId;
+    else userId = purchase?.userId || purchase?.uid || null;
+  }
+
+  if (!userId) {
+    console.error('[revenuecatWebhook.service] could not resolve internal userId for purchase', { appUserId, purchase });
   }
 
   const subscriptionId = purchase?.subscription_id || purchase?.product_id || null;
