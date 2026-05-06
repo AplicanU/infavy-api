@@ -40,6 +40,7 @@ module.exports = function attachApis(app, routePrefix = '/api/v1') {
     const likesRouter = require('./routes/likes');
     const profilesRouter = require('./routes/profiles');
     const razorpayWebhookRouter = require('./routes/webhooks-razorpay');
+    const revenuecatWebhookRouter = require('./routes/webhooks-revenuecat');
 
     app.locals.apiEndpoints = app.locals.apiEndpoints || [];
     app.locals.apiEndpoints.push({ method: 'GET', url: `${routePrefix}/ping`, doc: null });
@@ -64,4 +65,5 @@ module.exports = function attachApis(app, routePrefix = '/api/v1') {
     addRoutesFromRouter(app, `${routePrefix}/likes`, likesRouter, 'LIKES_API');
     addRoutesFromRouter(app, `${routePrefix}/profiles`, profilesRouter, 'AUTH_API');
     addRoutesFromRouter(app, `${routePrefix}/webhooks/razorpay`, razorpayWebhookRouter, null);
+    addRoutesFromRouter(app, `${routePrefix}/webhooks/revenuecat`, revenuecatWebhookRouter, null);
 };

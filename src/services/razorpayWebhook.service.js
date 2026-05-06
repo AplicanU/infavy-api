@@ -110,6 +110,7 @@ async function createSubscriptionFromPayment(payment) {
         retryCount: 0,
         razorpayPaymentId: paymentId,
         lastProcessedPaymentId: paymentId,
+        processor: 'razorpay',
         updatedAt: now,
       };
 
@@ -131,6 +132,7 @@ async function createSubscriptionFromPayment(payment) {
         status: 'active',
         razorpayPaymentId: paymentId,
         razorpaySubscriptionId: subscriptionId || null,
+        processor: 'razorpay',
         amount: payment.amount || null,
         startDate,
         endDate,
@@ -190,6 +192,7 @@ async function extendSubscriptionBySubscriptionId(razorpaySubscriptionId, days =
         status: 'active',
         lastPaymentStatus: 'success',
         retryCount: 0,
+        processor: 'razorpay',
       };
       if (processorId) updates.lastProcessedPaymentId = processorId;
 
@@ -231,6 +234,7 @@ async function extendSubscriptionByUserId(userId, days = 30) {
         status: 'active',
         lastPaymentStatus: 'success',
         retryCount: 0,
+        processor: 'razorpay',
       };
 
       tx.update(doc.ref, updates);
