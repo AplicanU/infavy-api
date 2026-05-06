@@ -3,6 +3,17 @@ const router = express.Router();
 const initFirebaseAdmin = require('../../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../../lib/blockedChannels');
 
+/**
+ * @openapi
+ * /api/v1/home/similar:
+ *   get:
+ *     summary: Get similar videos for a given video
+ *     parameters:
+ *       - in: query
+ *         name: excludeVideoId
+ *         schema:
+ *           type: string
+ */
 // GET /api/v1/home/similar
 // Query params:
 // - excludeVideoId : videoId to exclude from results

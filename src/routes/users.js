@@ -3,6 +3,23 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * /api/v1/users/{uid}:
+ *   get:
+ *     summary: Fetch user document by UID
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User retrieved
+ *       404:
+ *         description: User not found
+ */
 // GET /:uid - fetch user document
 router.get('/:uid', async (req, res) => {
   const uid = req.params.uid;
@@ -21,6 +38,34 @@ router.get('/:uid', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/v1/users/{uid}:
+ *   put:
+ *     summary: Update user displayName and/or photo
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               displayName:
+ *                 type: string
+ *               photoBase64:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated
+ *       400:
+ *         description: No updates provided
+ */
 // PUT /:uid - update displayName and/or photo (accepts base64 image in `photoBase64`)
 router.put('/:uid', async (req, res) => {
   const uid = req.params.uid;
@@ -74,6 +119,23 @@ router.put('/:uid', async (req, res) => {
   }
 });
 
+/**
+ * @openapi
+ * /api/v1/users/{uid}:
+ *   delete:
+ *     summary: Archive and delete user
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User archived and deleted
+ *       404:
+ *         description: User not found
+ */
 // DELETE /:uid - archive user reference to `deletedUsers` and remove account
 router.delete('/:uid', async (req, res) => {
   const uid = req.params.uid;

@@ -5,6 +5,36 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 const authController = require('../controllers/auth.controller');
 const rateLimiter = require('../middleware/rateLimiter');
 
+/**
+ * @openapi
+ * /api/v1/auth/signup:
+ *   post:
+ *     summary: Create a new user (email/password)
+ *
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Login with email/password
+ *
+ * /api/v1/auth/magic-link:
+ *   post:
+ *     summary: Send magic link email
+ *
+ * /api/v1/auth/send-otp:
+ *   post:
+ *     summary: Send OTP
+ *
+ * /api/v1/auth/verify-otp:
+ *   post:
+ *     summary: Verify OTP
+ *
+ * /api/v1/auth/custom-token:
+ *   post:
+ *     summary: Create a custom token for uid or phone
+ *
+ * /api/v1/auth/me:
+ *   get:
+ *     summary: Get current user (requires Authorization header)
+ */
 // POST /api/v1/auth/signup
 // Creates a Firebase Auth user (email/password) and returns a custom token the client can exchange
 router.post('/signup', async (req, res) => {

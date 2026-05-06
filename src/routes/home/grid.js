@@ -3,6 +3,12 @@ const router = express.Router();
 const initFirebaseAdmin = require('../../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../../lib/blockedChannels');
 
+/**
+ * @openapi
+ * /api/v1/home/grid:
+ *   get:
+ *     summary: Home grid categories and videos
+ */
 // GET /api/v1/home/grid
 // Returns home grid categories and their videos (ordered per homeGridItems)
 router.get('/', async (req, res) => {

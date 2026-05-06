@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "postman:sync": "node scripts/generate-and-push-postman.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -17,6 +18,8 @@
     "vercel": "^50.18.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "swagger-jsdoc": "^6.2.8",
+    "openapi-to-postmanv2": "^2.5.2"
   }
 }

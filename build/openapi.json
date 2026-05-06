@@ -1,0 +1,382 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "@infavy/api-server",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/signup": {
+      "post": {
+        "summary": "Create a new user (email/password)"
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login with email/password"
+      }
+    },
+    "/api/v1/auth/magic-link": {
+      "post": {
+        "summary": "Send magic link email"
+      }
+    },
+    "/api/v1/auth/send-otp": {
+      "post": {
+        "summary": "Send OTP"
+      }
+    },
+    "/api/v1/auth/verify-otp": {
+      "post": {
+        "summary": "Verify OTP"
+      }
+    },
+    "/api/v1/auth/custom-token": {
+      "post": {
+        "summary": "Create a custom token for uid or phone"
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "summary": "Get current user (requires Authorization header)"
+      }
+    },
+    "/api/v1/channels/blocked": {
+      "get": {
+        "summary": "Get blocked channels for a user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "uid",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of blocked channels"
+          }
+        }
+      }
+    },
+    "/api/v1/channels": {
+      "get": {
+        "summary": "List channels"
+      },
+      "post": {
+        "summary": "Create a channel",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/channels/{id}": {
+      "get": {
+        "summary": "Get channel by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update channel by id"
+      },
+      "delete": {
+        "summary": "Delete channel by id"
+      }
+    },
+    "/api/v1/channels/{id}/videos": {
+      "get": {
+        "summary": "Get videos for a channel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/channels/block": {
+      "post": {
+        "summary": "Block a channel for a user"
+      }
+    },
+    "/api/v1/channels/unblock": {
+      "post": {
+        "summary": "Unblock a channel for a user"
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check endpoint"
+      }
+    },
+    "/api/v1/home/grid": {
+      "get": {
+        "summary": "Home grid categories and videos"
+      }
+    },
+    "/api/v1/home/hero": {
+      "get": {
+        "summary": "Homepage hero featured videos"
+      }
+    },
+    "/api/v1/home/similar": {
+      "get": {
+        "summary": "Get similar videos for a given video",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "excludeVideoId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/home/up-next": {
+      "get": {
+        "summary": "Get up-next video suggestions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "videoId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/home/video/{id}": {
+      "get": {
+        "summary": "Get a video by id or query params",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/likes/like": {
+      "post": {
+        "summary": "Like a video"
+      }
+    },
+    "/api/v1/likes/unlike": {
+      "post": {
+        "summary": "Unlike a video"
+      }
+    },
+    "/api/v1/likes/list": {
+      "get": {
+        "summary": "List liked videos for a user"
+      }
+    },
+    "/api/v1/profiles/{uid}": {
+      "get": {
+        "summary": "Get profiles for a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/profiles": {
+      "post": {
+        "summary": "Create a profile"
+      }
+    },
+    "/api/v1/profiles/{id}": {
+      "put": {
+        "summary": "Update a profile"
+      }
+    },
+    "/api/v1/subscriptions/subscribe": {
+      "post": {
+        "summary": "Subscribe a user to a channel"
+      }
+    },
+    "/api/v1/subscriptions/unsubscribe": {
+      "post": {
+        "summary": "Unsubscribe a user from a channel"
+      }
+    },
+    "/api/v1/subscriptions/list": {
+      "get": {
+        "summary": "List subscriptions for a user"
+      }
+    },
+    "/api/v1/users/{uid}": {
+      "get": {
+        "summary": "Fetch user document by UID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user displayName and/or photo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "photoBase64": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated"
+          },
+          "400": {
+            "description": "No updates provided"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Archive and delete user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User archived and deleted"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/v1/videos": {
+      "get": {
+        "summary": "List published videos",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "uid",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/videos/report": {
+      "post": {
+        "summary": "Report a video"
+      }
+    },
+    "/api/v1/watchlist/list": {
+      "get": {
+        "summary": "Get watchlist for a user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/watchlist/add": {
+      "post": {
+        "summary": "Add a video to watchlist"
+      }
+    },
+    "/api/v1/watchlist/remove": {
+      "post": {
+        "summary": "Remove a video from watchlist"
+      }
+    },
+    "/api/v1/webhooks/razorpay": {
+      "post": {
+        "summary": "Razorpay webhook endpoint (raw body expected)"
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}

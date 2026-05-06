@@ -3,6 +3,17 @@ const router = express.Router();
 const initFirebaseAdmin = require('../../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../../lib/blockedChannels');
 
+/**
+ * @openapi
+ * /api/v1/home/video/{id}:
+ *   get:
+ *     summary: Get a video by id or query params
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ */
 // GET /api/v1/home/current
 // Supports:
 // - GET /api/v1/home/video/:id

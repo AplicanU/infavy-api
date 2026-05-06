@@ -3,6 +3,26 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * /api/v1/profiles/{uid}:
+ *   get:
+ *     summary: Get profiles for a user
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *
+ * /api/v1/profiles:
+ *   post:
+ *     summary: Create a profile
+ *
+ * /api/v1/profiles/{id}:
+ *   put:
+ *     summary: Update a profile
+ */
 // GET /:uid - fetch all profiles for a given user
 router.get('/:uid', async (req, res) => {
   const uid = req.params.uid;

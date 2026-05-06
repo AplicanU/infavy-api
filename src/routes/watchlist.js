@@ -3,8 +3,25 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 
 const router = express.Router();
 
-// GET /list?profileId=<id|null>
-// Requires Authorization: Bearer <idToken>
+/**
+ * @openapi
+ * /api/v1/watchlist/list:
+ *   get:
+ *     summary: Get watchlist for a user
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *
+ * /api/v1/watchlist/add:
+ *   post:
+ *     summary: Add a video to watchlist
+ *
+ * /api/v1/watchlist/remove:
+ *   post:
+ *     summary: Remove a video from watchlist
+ */
 router.get('/list', async (req, res) => {
   const admin = initFirebaseAdmin();
   if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });

@@ -3,17 +3,70 @@ const router = express.Router();
 const initFirebaseAdmin = require('../lib/firebaseAdmin');
 const { getBlockedChannelIds } = require('../lib/blockedChannels');
 
-// Collection: channels
-// Routes:
-// GET /         - list all channels
-// GET /:id      - get channel by document id
-// POST /        - create channel
-// PUT /:id      - update channel
-// DELETE /:id   - delete channel
-
-// GET /blocked
-// Query: ?uid=<uid>
-// Returns list of blockedChannels for an explicit uid
+/**
+ * @openapi
+ * /api/v1/channels/blocked:
+ *   get:
+ *     summary: Get blocked channels for a user
+ *     parameters:
+ *       - in: query
+ *         name: uid
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of blocked channels
+ *
+ * /api/v1/channels:
+ *   get:
+ *     summary: List channels
+ *   post:
+ *     summary: Create a channel
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *
+ * /api/v1/channels/{id}:
+ *   get:
+ *     summary: Get channel by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *   put:
+ *     summary: Update channel by id
+ *   delete:
+ *     summary: Delete channel by id
+ *
+ * /api/v1/channels/{id}/videos:
+ *   get:
+ *     summary: Get videos for a channel
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *
+ * /api/v1/channels/block:
+ *   post:
+ *     summary: Block a channel for a user
+ *
+ * /api/v1/channels/unblock:
+ *   post:
+ *     summary: Unblock a channel for a user
+ */
 router.get('/blocked', async (req, res) => {
   const adm = initFirebaseAdmin();
   if (!adm) return res.status(500).json({ error: 'Firebase Admin not initialized on server' });
