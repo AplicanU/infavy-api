@@ -120,3 +120,29 @@ router.get('/:uid', async (req, res) => {
     return res.status(500).json({ ok: false, error: String(err) });
   }
 });
+
+// GET /:uid/activity
+// Returns recent subscription activity entries for a user (from `subscriptionActivity` collection)
+router.get('/:uid/activity', async (req, res) => {
+  const admin = initFirebaseAdmin();
+  if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });
+
+  try {
+    const uid = req.params.uid || req.query.uid;
+    if (!uid) return res.status(400).json({ ok: false, error: 'Missing uid in path or query' });
+
+    const db = admin.firestore();
+    const limit = (req.query.limit && Number.isFinite(Number(req.query.limit))) ? Math.min(200, Math.max(1, Number(req.query.limit))) : 50;
+
+    // Query activity by uid, most recent first
+    let q = db.collection('subscriptionActivity').where('uid', '==', uid).orderBy('time', 'desc');
+    const snap = await q.limit(limit).get();
+    if (snap.empty) return res.json({ ok: true, items: [] });
+
+    const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    return res.json({ ok: true, source: 'webhook', items });
+  } catch (err) {
+    console.error('[userSubscriptions] GET /:uid/activity error', err);
+    return res.status(500).json({ ok: false, error: String(err) });
+  }
+});
