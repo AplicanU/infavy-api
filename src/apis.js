@@ -37,6 +37,7 @@ module.exports = function attachApis(app, routePrefix = '/api/v1') {
     const videosRouter = require('./routes/videos');
     const watchlistRouter = require('./routes/watchlist');
     const subscriptionsRouter = require('./routes/subscriptions');
+    const userSubscriptionsRouter = require('./routes/userSubscriptions');
     const likesRouter = require('./routes/likes');
     const profilesRouter = require('./routes/profiles');
     const razorpayWebhookRouter = require('./routes/webhooks-razorpay');
@@ -62,6 +63,7 @@ module.exports = function attachApis(app, routePrefix = '/api/v1') {
     addRoutesFromRouter(app, `${routePrefix}/users`, usersRouter, 'AUTH_API');
     addRoutesFromRouter(app, `${routePrefix}/watchlist`, watchlistRouter, 'WATCHLIST_API');
     addRoutesFromRouter(app, `${routePrefix}/subscriptions`, subscriptionsRouter, 'SUBSCRIPTIONS_API');
+    addRoutesFromRouter(app, `${routePrefix}/userSubscriptions`, userSubscriptionsRouter, 'SUBSCRIPTIONS_API');
     addRoutesFromRouter(app, `${routePrefix}/likes`, likesRouter, 'LIKES_API');
     addRoutesFromRouter(app, `${routePrefix}/profiles`, profilesRouter, 'AUTH_API');
     addRoutesFromRouter(app, `${routePrefix}/webhooks/razorpay`, razorpayWebhookRouter, null);
