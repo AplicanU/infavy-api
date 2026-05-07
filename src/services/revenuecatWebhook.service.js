@@ -278,9 +278,8 @@ async function cancelSubscriptionsByRevenuecatSubscriptionId(revSubId) {
   const now = admin.firestore.Timestamp.now();
   const q = await db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId).get();
   const ops = [];
-  // Do NOT set `status` to inactive/cancelled per rules. Keep `status` as-is
-  // but mark lastPaymentStatus so the event is recorded.
-  q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
+  // Mark subscription as cancelled so status reflects the cancellation event
+  q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', lastPaymentStatus: 'cancelled', updatedAt: now })));
   await Promise.all(ops);
   return true;
 }
@@ -368,7 +367,7 @@ async function handleEvent(event) {
               return { skipped: true };
             }
 
-            const updates = { lastPaymentStatus: 'success', retryCount: 0, updatedAt: now, processor: 'revenuecat' };
+            const updates = { status: 'active', lastPaymentStatus: 'success', retryCount: 0, updatedAt: now, processor: 'revenuecat' };
             if (processorId) updates.lastProcessedPaymentId = processorId;
             if (mapped.expiration_at_ms) updates.endDate = tsFromMs(mapped.expiration_at_ms);
             else {
@@ -401,9 +400,9 @@ async function handleEvent(event) {
         const now = admin.firestore.Timestamp.now();
         const q = await db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId).get();
         const ops = [];
-        q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
+        q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', lastPaymentStatus: 'cancelled', updatedAt: now })));
         await Promise.all(ops);
-        console.log('[revenuecatWebhook.service] cancellation received (kept active)', { eventId, revSubId });
+        console.log('[revenuecatWebhook.service] cancellation received (marked cancelled)', { eventId, revSubId });
         return true;
       }
 
@@ -415,9 +414,9 @@ async function handleEvent(event) {
           const now = admin.firestore.Timestamp.now();
           const q = await db.collection('subscriptions').where('uid', '==', uid).get();
           const ops = [];
-          q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
+          q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', lastPaymentStatus: 'cancelled', updatedAt: now })));
           await Promise.all(ops);
-          console.log('[revenuecatWebhook.service] cancellation received by user (kept active)', { eventId, uid });
+          console.log('[revenuecatWebhook.service] cancellation received by user (marked cancelled)', { eventId, uid });
           return true;
         }
       }
@@ -440,10 +439,14 @@ async function handleEvent(event) {
         await Promise.all(ops);
       };
 
+      // Try to apply expiration by both revenuecatSubscriptionId and uid mapping.
+      // Do not short-circuit on the first match so we update all relevant docs.
+      let applied = false;
+
       if (revSubId) {
         await applyInactive(db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId));
         console.log('[revenuecatWebhook.service] expiration processed by revSubId', { eventId, revSubId });
-        return true;
+        applied = true;
       }
 
       if (appUserId) {
@@ -453,9 +456,11 @@ async function handleEvent(event) {
           console.log('[revenuecatWebhook.service] expiration processed by uid', { eventId, uid });
           // sync users table
           await db.collection('users').doc(String(uid)).set({ isSubscribed: false, updatedAt: now }, { merge: true });
-          return true;
+          applied = true;
         }
       }
+
+      if (applied) return true;
 
       throw new Error('expiration event missing identifiers');
     }
