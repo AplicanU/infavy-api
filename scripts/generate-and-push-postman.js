@@ -9,7 +9,7 @@ const fetch = globalThis.fetch || require('node-fetch');
 const outDir = path.resolve(process.cwd(), 'build');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-const swaggerSpec = swaggerJSDoc({
+let swaggerSpec = swaggerJSDoc({
   definition: {
     openapi: '3.0.0',
     info: { title: process.env.npm_package_name || 'API', version: process.env.npm_package_version || '1.0.0' }

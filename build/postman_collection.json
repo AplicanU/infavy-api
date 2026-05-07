@@ -1,15 +1,15 @@
 {
   "item": [
     {
-      "id": "f8419b9c-5a26-4a5f-8c05-824d76f49acf",
+      "id": "3e43f228-ff44-4af6-b748-7cd8d8204a85",
       "name": "api/v1",
       "item": [
         {
-          "id": "c77827f5-2ff3-45b7-b17a-0786c661f497",
+          "id": "d4804bda-eddb-419d-913f-8000b73e2be8",
           "name": "auth",
           "item": [
             {
-              "id": "5c243cd1-001e-4eb8-b37d-5d5e92d32218",
+              "id": "c8c6f582-2601-4885-87d7-a8fbd2481446",
               "name": "Create a new user (email/password)",
               "request": {
                 "name": "Create a new user (email/password)",
@@ -27,14 +27,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "853b6992-12d2-4cbd-924c-ff5a73a7e09b",
+              "id": "117daa27-3e0d-4381-84e9-8003d3acf453",
               "name": "Login with email/password",
               "request": {
                 "name": "Login with email/password",
@@ -52,14 +70,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "cf54d901-bbd5-43da-a7d1-40c83a6e49bc",
+              "id": "b6c2bab4-2107-4dbd-aae0-73c3765e4881",
               "name": "Send magic link email",
               "request": {
                 "name": "Send magic link email",
@@ -77,14 +113,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "f5fb90c5-1397-465a-a92d-24bf9495f3ef",
+              "id": "20afb9e4-2ff1-4ed8-b1be-a26843e74dc7",
               "name": "Send OTP",
               "request": {
                 "name": "Send OTP",
@@ -102,14 +156,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "ffa4bda6-8dcf-45fd-9cc5-2f3b9a80a626",
+              "id": "d76c3e37-1ec8-46e5-965f-5954c7aec653",
               "name": "Verify OTP",
               "request": {
                 "name": "Verify OTP",
@@ -127,14 +199,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "3665e3c7-a1fa-4b5d-8093-67a459c6c2df",
+              "id": "f492e209-dde7-4d14-8b16-b928fadccd16",
               "name": "Create a custom token for uid or phone",
               "request": {
                 "name": "Create a custom token for uid or phone",
@@ -152,14 +242,32 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "01e30941-845e-4776-8d26-0c37ede7f17a",
+              "id": "b10a7633-bb36-4f33-93dd-cf7b35a21feb",
               "name": "Get current user (requires Authorization header)",
               "request": {
                 "name": "Get current user (requires Authorization header)",
@@ -177,21 +285,291 @@
                   "query": [],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "ab7f7ed5-a8c8-472e-9687-2122442061d7",
+              "name": "/api/v1/auth/resend-otp",
+              "request": {
+                "name": "/api/v1/auth/resend-otp",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "resend-otp"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "9144614e-f970-41c0-88e8-fd726d910245",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "auth",
+                        "resend-otp"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "47884520-bdd1-419c-a5f1-3316992f5748",
+              "name": "/api/v1/auth/verify-token",
+              "request": {
+                "name": "/api/v1/auth/verify-token",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "verify-token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "7c472c44-2518-4714-aa47-aeeba9d65de4",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "auth",
+                        "verify-token"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "48764c23-8f65-4d94-9a4e-9f2931f5eb49",
+              "name": "/api/v1/auth/logout",
+              "request": {
+                "name": "/api/v1/auth/logout",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "auth",
+                    "logout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "97cb2520-a8cf-49e3-a94a-6e964ad10773",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "auth",
+                        "logout"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "9b2a4367-96ab-45ec-a071-7cb2edba8609",
+          "id": "1f66cc89-beab-4291-9fde-6c4ea0377f6a",
           "name": "channels",
           "item": [
             {
-              "id": "f91f4f0b-b78f-45f4-a155-fb19e8814b86",
+              "id": "0e05e248-7838-4a55-9001-b67fbbf5201a",
               "name": "List channels",
               "request": {
                 "name": "List channels",
@@ -215,7 +593,7 @@
               "event": []
             },
             {
-              "id": "1880200a-2d04-46ff-bdd7-66b0d9584792",
+              "id": "3d0ff924-c744-499f-9485-a041c4b249b1",
               "name": "Create a channel",
               "request": {
                 "name": "Create a channel",
@@ -252,7 +630,7 @@
               },
               "response": [
                 {
-                  "id": "bb98f3e4-b235-46b5-953f-a3f2525e674b",
+                  "id": "2af9df12-1afc-4905-8cee-5134af80c16e",
                   "name": "OK",
                   "originalRequest": {
                     "url": {
@@ -297,17 +675,17 @@
               }
             },
             {
-              "id": "1d6ecb49-5189-48e0-b1d7-1d074ef45c18",
-              "name": "Get blocked channels for a user",
+              "id": "e3889577-cfc0-4d54-a845-35f06fb7a18b",
+              "name": "/api/v1/channels/",
               "request": {
-                "name": "Get blocked channels for a user",
+                "name": "/api/v1/channels/",
                 "description": {},
                 "url": {
                   "path": [
                     "api",
                     "v1",
                     "channels",
-                    "blocked"
+                    ""
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -316,6 +694,16 @@
                     {
                       "disabled": false,
                       "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "limit",
                       "value": "<string>"
                     }
                   ],
@@ -326,15 +714,15 @@
               },
               "response": [
                 {
-                  "id": "d6619ac2-1442-45c3-a395-cba932c9aafd",
-                  "name": "List of blocked channels",
+                  "id": "1c023d15-9d08-4982-8b62-ec42770cc5ea",
+                  "name": "OK",
                   "originalRequest": {
                     "url": {
                       "path": [
                         "api",
                         "v1",
                         "channels",
-                        "blocked"
+                        ""
                       ],
                       "host": [
                         "{{baseUrl}}"
@@ -342,6 +730,14 @@
                       "query": [
                         {
                           "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "limit",
                           "value": "<string>"
                         }
                       ],
@@ -366,11 +762,185 @@
               "event": []
             },
             {
-              "id": "94dbcc44-7431-4532-b11e-26120edb09b4",
+              "id": "bfbdca5b-ba27-47d6-a92b-1157116d7f4a",
+              "name": "/api/v1/channels/",
+              "request": {
+                "name": "/api/v1/channels/",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "channels",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "limit",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "05365914-7531-4538-8a56-086f851efe75",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "channels",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "04a348a6-c291-4a2d-b3ab-63607710321c",
+              "name": "Get blocked channels for a user",
+              "request": {
+                "name": "Get blocked channels for a user",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "channels",
+                    "blocked"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "limit",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "4259b2f3-e032-4a2b-8aaa-e8a4880e7176",
+                  "name": "List of blocked channels",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "channels",
+                        "blocked"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "def4e8e6-c513-4b08-bd23-795556982dd0",
               "name": "{id}",
               "item": [
                 {
-                  "id": "2e37b6e8-daaa-40db-be8c-700d31b6c8db",
+                  "id": "faf5e23a-ae5c-4fdd-9923-cd4c78ee70a1",
                   "name": "Get channel by id",
                   "request": {
                     "name": "Get channel by id",
@@ -385,7 +955,23 @@
                       "host": [
                         "{{baseUrl}}"
                       ],
-                      "query": [],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
                       "variable": [
                         {
                           "disabled": false,
@@ -403,7 +989,7 @@
                   "event": []
                 },
                 {
-                  "id": "07875055-3b01-4c27-baa9-0fba3ccff089",
+                  "id": "c68f0214-d52d-458a-8734-3fd89bee49ce",
                   "name": "Update channel by id",
                   "request": {
                     "name": "Update channel by id",
@@ -418,8 +1004,32 @@
                       "host": [
                         "{{baseUrl}}"
                       ],
-                      "query": [],
-                      "variable": []
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "disabled": false,
+                          "type": "any",
+                          "value": "<string>",
+                          "key": "id",
+                          "description": "(Required) "
+                        }
+                      ]
                     },
                     "method": "PUT",
                     "auth": null
@@ -428,7 +1038,7 @@
                   "event": []
                 },
                 {
-                  "id": "214068ea-af54-482d-897f-c33b840281cf",
+                  "id": "b1151753-e2dd-4a2d-a999-3ba0112d36a1",
                   "name": "Delete channel by id",
                   "request": {
                     "name": "Delete channel by id",
@@ -443,8 +1053,32 @@
                       "host": [
                         "{{baseUrl}}"
                       ],
-                      "query": [],
-                      "variable": []
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "disabled": false,
+                          "type": "any",
+                          "value": "<string>",
+                          "key": "id",
+                          "description": "(Required) "
+                        }
+                      ]
                     },
                     "method": "DELETE",
                     "auth": null
@@ -453,7 +1087,7 @@
                   "event": []
                 },
                 {
-                  "id": "a0997204-ca8a-4077-9018-a0190479a64b",
+                  "id": "c0805666-eb69-4723-a4fe-1638992ae2aa",
                   "name": "Get videos for a channel",
                   "request": {
                     "name": "Get videos for a channel",
@@ -469,7 +1103,23 @@
                       "host": [
                         "{{baseUrl}}"
                       ],
-                      "query": [],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "limit",
+                          "value": "<string>"
+                        }
+                      ],
                       "variable": [
                         {
                           "disabled": false,
@@ -490,7 +1140,7 @@
               "event": []
             },
             {
-              "id": "190d2e83-3fa5-4b0c-a4c0-8f9987692db6",
+              "id": "c8e4e56b-b54a-4fcc-bb70-fcb348fe2128",
               "name": "Block a channel for a user",
               "request": {
                 "name": "Block a channel for a user",
@@ -505,7 +1155,23 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "limit",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
                 "method": "POST",
@@ -515,7 +1181,7 @@
               "event": []
             },
             {
-              "id": "4e4cfcb1-18bf-412f-b2d7-ef87330b9653",
+              "id": "88d4574f-4c3e-4a7e-b2f0-e61b1ecdf4f8",
               "name": "Unblock a channel for a user",
               "request": {
                 "name": "Unblock a channel for a user",
@@ -530,7 +1196,23 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "limit",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
                 "method": "POST",
@@ -543,163 +1225,656 @@
           "event": []
         },
         {
-          "id": "3080b2cc-f884-410a-a59d-a893aecd9968",
+          "id": "72abc1ff-3fdb-424b-a575-121e4484fc64",
           "name": "home",
           "item": [
             {
-              "id": "ce479635-be6e-4c18-8f23-467f14e102ef",
-              "name": "Home grid categories and videos",
-              "request": {
-                "name": "Home grid categories and videos",
-                "description": {},
-                "url": {
-                  "path": [
-                    "api",
-                    "v1",
-                    "home",
-                    "grid"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
+              "id": "0dc08d7c-0ffd-4245-89a8-87646754a233",
+              "name": "grid",
+              "item": [
+                {
+                  "id": "ea9a2e14-6b80-4b28-a5ab-43125ae029d6",
+                  "name": "Home grid categories and videos",
+                  "request": {
+                    "name": "Home grid categories and videos",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "grid"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
                 },
-                "method": "GET",
-                "auth": null
-              },
-              "response": [],
-              "event": []
-            },
-            {
-              "id": "c8c9d0ba-c0a0-4416-b6de-d032bbcc576c",
-              "name": "Homepage hero featured videos",
-              "request": {
-                "name": "Homepage hero featured videos",
-                "description": {},
-                "url": {
-                  "path": [
-                    "api",
-                    "v1",
-                    "home",
-                    "hero"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET",
-                "auth": null
-              },
-              "response": [],
-              "event": []
-            },
-            {
-              "id": "423372ad-f180-4e8c-a199-bed50fe75ab5",
-              "name": "Get similar videos for a given video",
-              "request": {
-                "name": "Get similar videos for a given video",
-                "description": {},
-                "url": {
-                  "path": [
-                    "api",
-                    "v1",
-                    "home",
-                    "similar"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
+                {
+                  "id": "a26d572b-f8d1-4e67-8a38-bbc39e23c1a0",
+                  "name": "/api/v1/home/grid/",
+                  "request": {
+                    "name": "/api/v1/home/grid/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "grid",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [
                     {
-                      "disabled": false,
-                      "key": "excludeVideoId",
-                      "value": "<string>"
+                      "id": "55aaccd6-90d0-40c2-9d59-f7d0fb35b13f",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "home",
+                            "grid",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "uid",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "userId",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "method": "GET",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
                     }
                   ],
-                  "variable": []
-                },
-                "method": "GET",
-                "auth": null
-              },
-              "response": [],
+                  "event": []
+                }
+              ],
               "event": []
             },
             {
-              "id": "b88699b3-c020-4b0b-b40c-d9fccb61a6dd",
-              "name": "Get up-next video suggestions",
-              "request": {
-                "name": "Get up-next video suggestions",
-                "description": {},
-                "url": {
-                  "path": [
-                    "api",
-                    "v1",
-                    "home",
-                    "up-next"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
+              "id": "46433d95-6b9e-4f4e-a9a6-eb7ad8f607d4",
+              "name": "hero",
+              "item": [
+                {
+                  "id": "bde4ffc0-6d17-44a1-ab81-0d9c9c202470",
+                  "name": "Homepage hero featured videos",
+                  "request": {
+                    "name": "Homepage hero featured videos",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "hero"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
+                },
+                {
+                  "id": "8d957f89-cab5-4923-af33-4e4ce5b61fc8",
+                  "name": "/api/v1/home/hero/",
+                  "request": {
+                    "name": "/api/v1/home/hero/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "hero",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [
                     {
-                      "disabled": false,
-                      "key": "videoId",
-                      "value": "<string>"
+                      "id": "7f5e561d-2d27-481a-ae16-2c3a16eaf750",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "home",
+                            "hero",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "uid",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "userId",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "method": "GET",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
                     }
                   ],
-                  "variable": []
-                },
-                "method": "GET",
-                "auth": null
-              },
-              "response": [],
+                  "event": []
+                }
+              ],
               "event": []
             },
             {
-              "id": "d125755c-91e3-4044-8b9f-8fd9b67d2cca",
-              "name": "Get a video by id or query params",
-              "request": {
-                "name": "Get a video by id or query params",
-                "description": {},
-                "url": {
-                  "path": [
-                    "api",
-                    "v1",
-                    "home",
-                    "video",
-                    ":id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "id"
-                    }
-                  ]
+              "id": "941c46b2-1feb-4a44-ba50-6d2ca71ace5c",
+              "name": "similar",
+              "item": [
+                {
+                  "id": "fed014f7-3b8c-46fe-a35b-51edf108b8ef",
+                  "name": "Get similar videos for a given video",
+                  "request": {
+                    "name": "Get similar videos for a given video",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "similar"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "excludeVideoId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
                 },
-                "method": "GET",
-                "auth": null
-              },
-              "response": [],
+                {
+                  "id": "94d2c7b1-23a3-45cb-8cd5-c09c6ec28715",
+                  "name": "/api/v1/home/similar/",
+                  "request": {
+                    "name": "/api/v1/home/similar/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "similar",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "limit",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "recentlyPlayed",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "c7d2d3ed-5157-4e25-aad4-1b41d24f00c8",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "home",
+                            "similar",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "limit",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "recentlyPlayed",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "uid",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "userId",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "method": "GET",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": []
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "e4466bfe-1cad-4fff-8653-9c3f1e5d1db4",
+              "name": "up-next",
+              "item": [
+                {
+                  "id": "770cb8a5-7a43-47b8-8be7-b541d4875ca4",
+                  "name": "Get up-next video suggestions",
+                  "request": {
+                    "name": "Get up-next video suggestions",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "up-next"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "videoId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
+                },
+                {
+                  "id": "668549e5-3c13-4c2e-81ff-2f7b2d7fe289",
+                  "name": "/api/v1/home/up-next/",
+                  "request": {
+                    "name": "/api/v1/home/up-next/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "up-next",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "videoId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "playbackId",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "recentlyPlayed",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "81f9baca-3f00-457f-b49d-66f3bda0708b",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "home",
+                            "up-next",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "uid",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "userId",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "videoId",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "playbackId",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "recentlyPlayed",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "method": "GET",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": []
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "e325fcb3-0b6f-4393-a4ca-68e2af6813a6",
+              "name": "video",
+              "item": [
+                {
+                  "id": "bcd78916-a351-4d8f-8de1-d2e6c37356d9",
+                  "name": "Get a video by id or query params",
+                  "request": {
+                    "name": "Get a video by id or query params",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "video",
+                        ":id"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": [
+                        {
+                          "disabled": false,
+                          "type": "any",
+                          "value": "<string>",
+                          "key": "id"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
+                },
+                {
+                  "id": "88edacae-26af-4fd0-bcb0-e000517639ab",
+                  "name": "/api/v1/home/video/{{id}}?",
+                  "request": {
+                    "name": "/api/v1/home/video/{{id}}?",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "home",
+                        "video",
+                        "{{id}}"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "",
+                          "value": "null"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "id",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "disabled": false,
+                          "key": "userId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "1da754d9-fc53-419a-8a13-f1462aae2009",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "home",
+                            "video",
+                            "{{id}}"
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [
+                            {
+                              "key": "id",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "uid",
+                              "value": "<string>"
+                            },
+                            {
+                              "key": "userId",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": []
+                        },
+                        "method": "GET",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": []
+                }
+              ],
               "event": []
             }
           ],
           "event": []
         },
         {
-          "id": "6e832421-853d-43f0-a15a-42df22377c74",
+          "id": "d1ef426f-3ac6-4486-bad9-eb33a6b5f7f2",
           "name": "likes",
           "item": [
             {
-              "id": "0ea2dc79-fe34-4b75-b70f-cbf03212a1b7",
+              "id": "135432ca-1b39-4b7e-b0d4-d492f8981a9d",
               "name": "Like a video",
               "request": {
                 "name": "Like a video",
@@ -714,17 +1889,46 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"profileId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "5decde1e-27e8-4d1a-9373-4f3cacd0751c",
+              "id": "1250379a-75f5-4c4a-bfff-ab8b5e57a57f",
               "name": "Unlike a video",
               "request": {
                 "name": "Unlike a video",
@@ -739,17 +1943,46 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"profileId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "46b0133c-0819-4f7e-ab3a-b1a8bd1063f5",
+              "id": "bb9fc45f-ff79-4ef5-92c4-a95d17818371",
               "name": "List liked videos for a user",
               "request": {
                 "name": "List liked videos for a user",
@@ -764,24 +1997,53 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"profileId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "2bfa85ab-099d-4eea-a47e-28f142081bd8",
+          "id": "b36fc443-fd92-4e56-bbd3-fa9abe294619",
           "name": "profiles",
           "item": [
             {
-              "id": "8cf682f5-b5ff-4bca-82f9-75d7fe3e8ef1",
+              "id": "7f9c3b52-88a0-4b92-b849-e273c0439150",
               "name": "Create a profile",
               "request": {
                 "name": "Create a profile",
@@ -805,7 +2067,91 @@
               "event": []
             },
             {
-              "id": "5e0b4041-f21a-4c32-945d-d468a6d181ab",
+              "id": "8021e4e3-1a06-4b72-82e7-1d74e9e4fa70",
+              "name": "/api/v1/profiles/",
+              "request": {
+                "name": "/api/v1/profiles/",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "profiles",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"avatarColor\": \"<string>\",\n  \"avatarId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "063ccb9b-6660-492b-895d-233884a3600f",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "profiles",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"userId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"avatarColor\": \"<string>\",\n  \"avatarId\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "0499f5b8-6da4-428c-af0e-1bdd05dba7f2",
               "name": "Get profiles for a user",
               "request": {
                 "name": "Get profiles for a user",
@@ -831,14 +2177,32 @@
                     }
                   ]
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"avatarColor\": \"<string>\",\n  \"avatarId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "40cd62bd-302b-4a39-80b5-515ca7180dba",
+              "id": "8e287e5b-e40f-407b-9c55-e9e13d3679ca",
               "name": "Update a profile",
               "request": {
                 "name": "Update a profile",
@@ -854,23 +2218,49 @@
                     "{{baseUrl}}"
                   ],
                   "query": [],
-                  "variable": []
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "PUT",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"name\": \"<string>\",\n  \"avatarColor\": \"<string>\",\n  \"avatarId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "e66444c2-4397-4ee5-943a-6820380c1fb1",
+          "id": "5fe49d52-b768-462b-9977-89aa2aa84d7a",
           "name": "subscriptions",
           "item": [
             {
-              "id": "1370f7c7-5af7-40fc-a20e-9179e2ff2670",
+              "id": "f441203c-57b4-44fb-b6c6-88446802598b",
               "name": "Subscribe a user to a channel",
               "request": {
                 "name": "Subscribe a user to a channel",
@@ -885,17 +2275,46 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "a3ecba01-3879-4406-bda7-4627abdfcfd0",
+              "id": "aef6e0db-d58c-47b5-848f-44d565c58f33",
               "name": "Unsubscribe a user from a channel",
               "request": {
                 "name": "Unsubscribe a user from a channel",
@@ -910,17 +2329,46 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "d2865132-eb83-4f48-9b00-6b023c330ba8",
+              "id": "f17ac2ac-440b-432c-adcf-25b522eb1458",
               "name": "List subscriptions for a user",
               "request": {
                 "name": "List subscriptions for a user",
@@ -935,24 +2383,53 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "ab853a4a-9046-44ab-b388-651cfae6c6f9",
+          "id": "f7a0c440-dc4b-482a-98ef-c4b73230c344",
           "name": "users/{uid}",
           "item": [
             {
-              "id": "8382629d-ded0-4c3b-9dcc-ca2eaf7322b6",
+              "id": "c557602c-aa48-4fb6-8e94-932f9f1b3fde",
               "name": "Fetch user document by UID",
               "request": {
                 "name": "Fetch user document by UID",
@@ -978,12 +2455,27 @@
                     }
                   ]
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [
                 {
-                  "id": "e3b2054a-6056-44b6-a184-cd99a7454050",
+                  "id": "c7f04e14-3415-4ff2-b5d0-c97d9c974728",
                   "name": "User retrieved",
                   "originalRequest": {
                     "url": {
@@ -1008,7 +2500,15 @@
                       ]
                     },
                     "method": "GET",
-                    "body": {}
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
                   },
                   "status": "OK",
                   "code": 200,
@@ -1023,7 +2523,7 @@
                   "_postman_previewlanguage": "text"
                 },
                 {
-                  "id": "1e102b8c-b0a2-426b-942e-70a6c4201aa4",
+                  "id": "8ca67f07-ff24-4eda-90d8-e217af3de449",
                   "name": "User not found",
                   "originalRequest": {
                     "url": {
@@ -1048,7 +2548,15 @@
                       ]
                     },
                     "method": "GET",
-                    "body": {}
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
                   },
                   "status": "Not Found",
                   "code": 404,
@@ -1063,10 +2571,13 @@
                   "_postman_previewlanguage": "text"
                 }
               ],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "473b828d-da0c-495c-b6f2-e25034bdf9ca",
+              "id": "55118bfb-51ab-4fa6-a028-965c0c831abe",
               "name": "Update user displayName and/or photo",
               "request": {
                 "name": "Update user displayName and/or photo",
@@ -1112,7 +2623,7 @@
               },
               "response": [
                 {
-                  "id": "665b23d0-a93d-4297-8619-feb0e266e9d1",
+                  "id": "16612258-0d5f-4666-9f9e-6844472f85d4",
                   "name": "User updated",
                   "originalRequest": {
                     "url": {
@@ -1160,7 +2671,7 @@
                   "_postman_previewlanguage": "text"
                 },
                 {
-                  "id": "df642abd-664a-4e82-a671-234e21863bf6",
+                  "id": "a93c0e50-500d-4338-98e2-a3df872c3d0d",
                   "name": "No updates provided",
                   "originalRequest": {
                     "url": {
@@ -1214,7 +2725,7 @@
               }
             },
             {
-              "id": "175627ab-33a6-4c0d-aaac-120a838cb8f5",
+              "id": "9ed08303-e2e3-468e-8026-07076cb0df3e",
               "name": "Archive and delete user",
               "request": {
                 "name": "Archive and delete user",
@@ -1240,12 +2751,27 @@
                     }
                   ]
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "DELETE",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [
                 {
-                  "id": "1d43c93e-9ed1-4c8c-9e3d-e9b7d33c3def",
+                  "id": "4b62ba73-c991-4c49-b03b-26da02769328",
                   "name": "User archived and deleted",
                   "originalRequest": {
                     "url": {
@@ -1270,7 +2796,15 @@
                       ]
                     },
                     "method": "DELETE",
-                    "body": {}
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
                   },
                   "status": "OK",
                   "code": 200,
@@ -1285,7 +2819,7 @@
                   "_postman_previewlanguage": "text"
                 },
                 {
-                  "id": "c64768c7-daf9-472d-9559-21de31c6f981",
+                  "id": "c6a3f486-890e-43c1-b714-053db4d218cf",
                   "name": "User not found",
                   "originalRequest": {
                     "url": {
@@ -1310,7 +2844,15 @@
                       ]
                     },
                     "method": "DELETE",
-                    "body": {}
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"displayName\": \"<string>\",\n  \"photoBase64\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
                   },
                   "status": "Not Found",
                   "code": 404,
@@ -1325,17 +2867,20 @@
                   "_postman_previewlanguage": "text"
                 }
               ],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "4a64073f-6209-4ee8-9ba9-f04465481cb8",
+          "id": "9fe1157c-d778-4a96-9b63-af8b8def13bf",
           "name": "videos",
           "item": [
             {
-              "id": "8927e14a-aa9b-48d9-a1e2-68b4e249d092",
+              "id": "83d758af-3a4a-4d8b-8e4d-3bc4773f0d3b",
               "name": "List published videos",
               "request": {
                 "name": "List published videos",
@@ -1365,7 +2910,111 @@
               "event": []
             },
             {
-              "id": "4f2ad9b5-d29d-4cbf-83d0-2a4f345f938a",
+              "id": "511ae63f-e1c2-4b02-9eb3-6a77a789e1a8",
+              "name": "/api/v1/videos/",
+              "request": {
+                "name": "/api/v1/videos/",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "videos",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"uid\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"channelId\": \"<string>\",\n  \"reportedCategory\": \"<string>\",\n  \"userMessage\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [
+                {
+                  "id": "d7da3cca-71f1-48c3-b037-555f328b9826",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "videos",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "userId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "GET",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"uid\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"channelId\": \"<string>\",\n  \"reportedCategory\": \"<string>\",\n  \"userMessage\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "id": "7d0d23b3-65d1-4943-a543-6383604e246f",
               "name": "Report a video",
               "request": {
                 "name": "Report a video",
@@ -1380,24 +3029,53 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"uid\": \"<string>\",\n  \"videoId\": \"<string>\",\n  \"channelId\": \"<string>\",\n  \"reportedCategory\": \"<string>\",\n  \"userMessage\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             }
           ],
           "event": []
         },
         {
-          "id": "a7f2d2bc-8289-41f1-865f-b5a2a825ee8b",
+          "id": "8ee786d6-bc12-4909-aeac-3620174136ed",
           "name": "watchlist",
           "item": [
             {
-              "id": "240e9f14-3cfd-45c2-b7df-4f1eeb6c9d09",
+              "id": "a5f7f210-b474-475d-93d4-d2731b0bdce1",
               "name": "Get watchlist for a user",
               "request": {
                 "name": "Get watchlist for a user",
@@ -1417,18 +3095,41 @@
                       "disabled": false,
                       "key": "userId",
                       "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
                     }
                   ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "GET",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "d4fb3ee7-22f4-4d3f-87b9-936fa4a55815",
+              "id": "25820d07-a591-4d55-818a-7b4bc52fcfe3",
               "name": "Add a video to watchlist",
               "request": {
                 "name": "Add a video to watchlist",
@@ -1443,17 +3144,46 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
-              "event": []
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
             },
             {
-              "id": "20661405-51f8-4922-b416-5c6a4387d380",
+              "id": "9cd91258-a315-4749-b7ff-ac2769447899",
               "name": "Remove a video from watchlist",
               "request": {
                 "name": "Remove a video from watchlist",
@@ -1468,30 +3198,250 @@
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "userId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "profileId",
+                      "value": "<string>"
+                    }
+                  ],
                   "variable": []
                 },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "method": "POST",
-                "auth": null
+                "auth": null,
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
               },
               "response": [],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            }
+          ],
+          "event": []
+        },
+        {
+          "id": "387698a7-877a-41e1-9db9-e17279d665c2",
+          "name": "webhooks",
+          "item": [
+            {
+              "id": "62f2082e-81de-493a-bffb-259144e35f46",
+              "name": "razorpay",
+              "item": [
+                {
+                  "id": "a2ac78f3-61ce-4e50-ae56-22ed8dab4eec",
+                  "name": "Razorpay webhook endpoint (raw body expected)",
+                  "request": {
+                    "name": "Razorpay webhook endpoint (raw body expected)",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "webhooks",
+                        "razorpay"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
+                },
+                {
+                  "id": "90b2d178-5753-49f3-89b3-78339be443e5",
+                  "name": "/api/v1/webhooks/razorpay/",
+                  "request": {
+                    "name": "/api/v1/webhooks/razorpay/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "webhooks",
+                        "razorpay",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "00d38f60-d3d0-4edc-a307-d5fd8ab75ea0",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "webhooks",
+                            "razorpay",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "method": "POST",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": []
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "c404df99-248f-4a68-a2fb-471875f3a089",
+              "name": "revenuecat",
+              "item": [
+                {
+                  "id": "463353a0-5da7-4474-8437-97c7b7c05c7d",
+                  "name": "RevenueCat webhook endpoint (raw body expected)",
+                  "request": {
+                    "name": "RevenueCat webhook endpoint (raw body expected)",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "webhooks",
+                        "revenuecat"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "auth": null
+                  },
+                  "response": [],
+                  "event": []
+                },
+                {
+                  "id": "7178c245-32f6-434b-9030-ecb410229248",
+                  "name": "/api/v1/webhooks/revenuecat/",
+                  "request": {
+                    "name": "/api/v1/webhooks/revenuecat/",
+                    "description": {},
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "webhooks",
+                        "revenuecat",
+                        ""
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "a9147e52-9a7c-456c-bd4d-f945363376d6",
+                      "name": "OK",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "api",
+                            "v1",
+                            "webhooks",
+                            "revenuecat",
+                            ""
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "method": "POST",
+                        "body": {}
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "text/plain"
+                        }
+                      ],
+                      "body": "",
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": []
+                }
+              ],
               "event": []
             }
           ],
           "event": []
         },
         {
-          "id": "1ed858ee-edd1-4604-b2df-d83dd45ab7e4",
-          "name": "Razorpay webhook endpoint (raw body expected)",
+          "id": "c13cbae8-ddb1-4a48-b7a7-83b4fbca3275",
+          "name": "/api/v1/public-env/",
           "request": {
-            "name": "Razorpay webhook endpoint (raw body expected)",
+            "name": "/api/v1/public-env/",
             "description": {},
             "url": {
               "path": [
                 "api",
                 "v1",
-                "webhooks",
-                "razorpay"
+                "public-env",
+                ""
               ],
               "host": [
                 "{{baseUrl}}"
@@ -1499,35 +3449,334 @@
               "query": [],
               "variable": []
             },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "method": "POST",
-            "auth": null
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<string>\",\n  \"names\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
-          "response": [],
+          "response": [
+            {
+              "id": "3dda98c9-75b3-496e-8b68-1c38728b3663",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "public-env",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"<string>\",\n  \"names\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fad4e936-8300-4a64-860b-12b210b24acb",
+          "name": "user Subscriptions",
+          "item": [
+            {
+              "id": "f0a986ec-e5f2-4996-9538-92a41851e72c",
+              "name": "/api/v1/userSubscriptions/sync",
+              "request": {
+                "name": "/api/v1/userSubscriptions/sync",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "userSubscriptions",
+                    "sync"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "revenuecatSubscriptionId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "428989c5-3ac1-42a7-b310-64dc1d6fec01",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "userSubscriptions",
+                        "sync"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "revenuecatSubscriptionId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": []
+                    },
+                    "method": "POST",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": []
+            },
+            {
+              "id": "079ebe64-4ad4-4ff9-8cd8-7a8241f6fa24",
+              "name": "/api/v1/userSubscriptions/:uid",
+              "request": {
+                "name": "/api/v1/userSubscriptions/:uid",
+                "description": {},
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "userSubscriptions",
+                    ":uid"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "key": "uid",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "key": "revenuecatSubscriptionId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "uid",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "method": "GET",
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "ea9ca904-8881-4f45-a63e-3fc4ee55000f",
+                  "name": "OK",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "api",
+                        "v1",
+                        "userSubscriptions",
+                        ":uid"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [
+                        {
+                          "key": "uid",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "revenuecatSubscriptionId",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "disabled": false,
+                          "type": "any",
+                          "value": "<string>",
+                          "key": "uid",
+                          "description": "(Required) "
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/plain"
+                    }
+                  ],
+                  "body": "",
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": []
+            }
+          ],
           "event": []
         }
       ],
       "event": []
     },
     {
-      "id": "625d7199-f570-49ee-af68-38e0a54ba2f5",
-      "name": "Health check endpoint",
-      "request": {
-        "name": "Health check endpoint",
-        "description": {},
-        "url": {
-          "path": [
-            "health"
-          ],
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "query": [],
-          "variable": []
+      "id": "b27744a9-f1e8-4974-8d67-b6af3836d229",
+      "name": "health",
+      "item": [
+        {
+          "id": "27c5f8b4-3991-4aa2-adc1-3c9c95421788",
+          "name": "Health check endpoint",
+          "request": {
+            "name": "Health check endpoint",
+            "description": {},
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": []
         },
-        "method": "GET",
-        "auth": null
-      },
-      "response": [],
+        {
+          "id": "69d5ad66-1d27-485c-85fa-6a4e4e68cba4",
+          "name": "/health/",
+          "request": {
+            "name": "/health/",
+            "description": {},
+            "url": {
+              "path": [
+                "health",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0f648115-3355-45c1-a066-03885e79c21a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": []
+        }
+      ],
       "event": []
     }
   ],
@@ -1537,10 +3786,20 @@
       "type": "string",
       "value": "/",
       "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) ",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "id"
     }
   ],
   "info": {
-    "_postman_id": "17933ed1-ecc0-420d-9c4e-87f026db8480",
+    "_postman_id": "0507a3d9-9cc3-4b5c-a136-cf53c330b672",
     "name": "@infavy/api-server",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {

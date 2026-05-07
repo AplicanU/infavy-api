@@ -7,6 +7,35 @@ function tsFromDate(date) {
   return admin.firestore.Timestamp.fromDate(date);
 }
 
+function tsFromMs(ms) {
+  const admin = initFirebaseAdmin();
+  if (!ms) return null;
+  // Accept numbers (ms or seconds) or ISO strings. Be permissive.
+  let n = null;
+  if (typeof ms === 'number') n = ms;
+  else if (/^\d+$/.test(String(ms))) {
+    // numeric string
+    n = Number(ms);
+  } else if (typeof ms === 'string') {
+    // ISO or other date string
+    const parsed = Date.parse(ms);
+    if (!isNaN(parsed)) n = parsed;
+  }
+
+  if (n == null) {
+    // Could not parse; log and return null
+    try { console.warn('[revenuecatWebhook.service] tsFromMs: unrecognized timestamp', ms); } catch (e) {}
+    return null;
+  }
+
+  // If value looks like seconds (<= 1e10), convert to ms
+  if (n > 0 && n < 1e11) n = n * 1000;
+
+  const d = new Date(n);
+  if (isNaN(d.getTime())) return null;
+  return admin.firestore.Timestamp.fromDate(d);
+}
+
 async function getFirestore() {
   const admin = initFirebaseAdmin();
   if (!admin) throw new Error('Firebase Admin not initialized');
@@ -53,6 +82,23 @@ async function isEventProcessed(eventId) {
   return doc.exists;
 }
 
+/**
+ * Log subscription activity to Firestore collection `subscriptionActivity`.
+ * Fields: uid, eventType, time, rawInput, eventId
+ */
+async function logSubscriptionActivity(uid, eventType, rawInput, eventId = null) {
+  try {
+    const db = await getFirestore();
+    const admin = require('firebase-admin');
+    const now = admin.firestore.Timestamp.now();
+    await db.collection('subscriptionActivity').add({ uid: uid || null, eventType: eventType || null, time: now, rawInput: rawInput || null, eventId: eventId || null });
+  } catch (e) {
+    try {
+      console.warn('[revenuecatWebhook.service] failed to log subscription activity', e && e.message ? e.message : e);
+    } catch (ee) {}
+  }
+}
+
 async function markEventProcessed(eventId, meta = {}) {
   if (!eventId) return;
   const db = await getFirestore();
@@ -66,8 +112,9 @@ async function createSubscriptionFromRevenuecat(purchase) {
   const now = admin.firestore.Timestamp.now();
 
   // Resolve internal userId. Prefer mapping from RevenueCat `app_user_id` to internal uid.
+  // Mapping: `uid` <- `app_user_id` per specification
   let userId = null;
-  const appUserId = purchase?.app_user_id || purchase?.appUserId || null;
+  const appUserId = purchase?.app_user_id || purchase?.appUserId || purchase?.uid || null;
   if (appUserId) {
     try {
       userId = await getUserIdByAppUserId(appUserId);
@@ -87,8 +134,12 @@ async function createSubscriptionFromRevenuecat(purchase) {
     console.error('[revenuecatWebhook.service] could not resolve internal userId for purchase', { appUserId, purchase });
   }
 
-  const subscriptionId = purchase?.subscription_id || purchase?.product_id || null;
+  // revenuecatSubscriptionId <- product_id (or subscription_id)
+  // revenuecatTransactionId, lastProcessedPaymentId <- transaction_id
+  const subscriptionId = purchase?.product_id || purchase?.subscription_id || null;
   const transactionId = purchase?.transaction_id || purchase?.id || null;
+  const purchasedAtMs = purchase?.purchased_at_ms || purchase?.purchased_at || null;
+  const expirationAtMs = purchase?.expiration_at_ms || purchase?.expiration_at || null;
 
   if (!userId) throw new Error('RevenueCat purchase missing user mapping; cannot determine userId');
 
@@ -102,31 +153,46 @@ async function createSubscriptionFromRevenuecat(purchase) {
     const qSnap = await tx.get(q);
     if (!qSnap.empty) {
       const doc = qSnap.docs[0];
-      const data = doc.data();
+        const data = doc.data();
 
-      const existingEnd = data.endDate ? data.endDate.toDate() : null;
-      const nowDate = new Date();
-      const updates = {
-        status: 'active',
-        lastPaymentStatus: 'success',
-        retryCount: 0,
-        revenuecatTransactionId: transactionId,
-        lastProcessedPaymentId: transactionId,
-        processor: 'revenuecat',
-        updatedAt: now,
-      };
+        // Idempotency: if this transaction was already processed, skip updates
+        if (transactionId && data.lastProcessedPaymentId && data.lastProcessedPaymentId === transactionId) {
+          return (created = { id: doc.id, ...data });
+        }
 
-      if (!data.startDate) updates.startDate = now;
-      if (!existingEnd || existingEnd <= nowDate) {
-        const newEnd = new Date(Date.now() + 30 * DAY_MS);
-        updates.endDate = admin.firestore.Timestamp.fromDate(newEnd);
+        const existingEnd = data.endDate ? data.endDate.toDate() : null;
+        const nowDate = new Date();
+        const updates = {
+          // For an initial purchase we mark active and success by default
+          status: 'active',
+          lastPaymentStatus: 'success',
+          retryCount: 0,
+          revenuecatTransactionId: transactionId || data.revenuecatTransactionId || null,
+          lastProcessedPaymentId: transactionId || data.lastProcessedPaymentId || null,
+          processor: 'revenuecat',
+          updatedAt: now,
+        };
+
+        // Override start/end if event provides explicit timestamps (always prefer event timestamps)
+        if (purchasedAtMs) updates.startDate = tsFromMs(purchasedAtMs) || updates.startDate || now;
+        if (expirationAtMs) updates.endDate = tsFromMs(expirationAtMs) || updates.endDate;
+        // if no explicit expiration provided and subscription expired or missing, extend default 30 days
+        if (!updates.endDate && (!existingEnd || existingEnd <= nowDate)) {
+          const newEnd = new Date(Date.now() + 30 * DAY_MS);
+          updates.endDate = admin.firestore.Timestamp.fromDate(newEnd);
+        }
+
+      // Logging status transition and retry changes
+      try {
+        console.log('[revenuecatWebhook.service] update subscription', { uid: data.uid || userId, transactionId, oldStatus: data.status, newStatus: updates.status, oldRetry: data.retryCount, newRetry: updates.retryCount });
+      } catch (e) {
+        // swallow logging errors
       }
-
       tx.update(doc.ref, updates);
       created = { id: doc.id, ...data, ...updates };
     } else {
-      const startDate = now;
-      const endDate = admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30 * DAY_MS));
+      const startDate = tsFromMs(purchasedAtMs) || now;
+      const endDate = tsFromMs(expirationAtMs) || admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30 * DAY_MS));
       const payload = {
         uid: userId,
         status: 'active',
@@ -144,6 +210,9 @@ async function createSubscriptionFromRevenuecat(purchase) {
       const ref = subsRef.doc();
       tx.set(ref, payload);
       created = { id: ref.id, ...payload };
+      try {
+        console.log('[revenuecatWebhook.service] created subscription', { uid: payload.uid, transactionId, revenuecatSubscriptionId: payload.revenuecatSubscriptionId });
+      } catch (e) {}
     }
 
     try {
@@ -172,6 +241,8 @@ async function extendSubscriptionByUserId(userId, days = 30, processorId = null)
 
     qSnap.forEach((doc) => {
       const data = doc.data();
+      // idempotency: if we've already processed this payment, skip
+      if (processorId && data.lastProcessedPaymentId && data.lastProcessedPaymentId === processorId) return;
       const currentEnd = data.endDate ? data.endDate.toDate() : new Date();
       const base = currentEnd < new Date() ? new Date() : currentEnd;
       const newEnd = new Date(base.getTime() + addMs);
@@ -185,6 +256,10 @@ async function extendSubscriptionByUserId(userId, days = 30, processorId = null)
         processor: 'revenuecat',
       };
       if (processorId) updates.lastProcessedPaymentId = processorId;
+
+      try {
+        console.log('[revenuecatWebhook.service] extend subscription', { uid: data.uid || userId, oldStatus: data.status, newStatus: updates.status, oldRetry: data.retryCount, newRetry: updates.retryCount, processorId });
+      } catch (e) {}
 
       tx.update(doc.ref, updates);
       anyUpdated = true;
@@ -203,28 +278,52 @@ async function cancelSubscriptionsByRevenuecatSubscriptionId(revSubId) {
   const now = admin.firestore.Timestamp.now();
   const q = await db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId).get();
   const ops = [];
-  q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', updatedAt: now })));
+  // Do NOT set `status` to inactive/cancelled per rules. Keep `status` as-is
+  // but mark lastPaymentStatus so the event is recorded.
+  q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
   await Promise.all(ops);
   return true;
 }
 
 /**
- * Main handler for RevenueCat events. This implementation is intentionally
- * permissive because RevenueCat event payload structures may vary by event.
+ * Main handler for RevenueCat events. Mapping rules and behaviour are kept
+ * minimal and non-breaking; event fields are normalized then mapped to our
+ * subscription schema. Important rules implemented:
+ * - Idempotency via `lastProcessedPaymentId`
+ * - Mapping from RevenueCat fields to our schema (documented inline)
+ * - Do not trust `status` blindly; compute `inactive` when endDate passed
+ * - Cancellation does not deactivate subscription — only logs/marks payment status
  */
 async function handleEvent(event) {
   if (!event) throw new Error('Invalid event object');
   // Prefer inner payload if present (some webhook envelopes use `event`)
   const payload = event.data || event.payload || event.event || event || {};
-  const type = (payload.type || payload.event || payload?.data?.type || '').toString();
+  const type = (payload.type || payload.event || payload?.data?.type || event?.type || '').toString();
 
   // Resolve a robust event id from payload or top-level
   const eventId = payload?.event_id || payload?.id || payload?.data?.id || event?.event_id || event?.id || payload?.transaction_id || payload?.original_transaction_id || null;
   console.log('[revenuecatWebhook.service] handling event', type || '(no type)', eventId || '(no id)', 'payloadKeys=', Object.keys(payload || {}));
 
-  // Try to handle common cases: initial purchase, renewal, cancellation
+  // Normalize relevant fields according to Step 1 mapping
+  // uid <- app_user_id
+  // revenuecatSubscriptionId <- product_id
+  // revenuecatTransactionId, lastProcessedPaymentId <- transaction_id
+  // startDate <- purchased_at_ms, endDate <- expiration_at_ms
+  const mapped = {
+    uid: payload?.app_user_id || payload?.appUserId || payload?.uid || payload?.subscriber?.app_user_id || null,
+    revenuecatSubscriptionId: payload?.product_id || payload?.subscription_id || payload?.productId || null,
+    transaction_id: payload?.transaction_id || payload?.transaction?.id || payload?.purchase?.id || null,
+    purchased_at_ms: payload?.purchased_at_ms || payload?.purchase?.purchased_at_ms || payload?.purchase?.purchased_at || payload?.purchased_at || null,
+    expiration_at_ms: payload?.expiration_at_ms || payload?.purchase?.expiration_at_ms || payload?.expiration_at || null,
+    eventType: type,
+  };
+
+  const incomingTxn = mapped.transaction_id;
+
   try {
-    // Flat TEST events or payloads that include top-level purchase fields (e.g. product_id + app_user_id)
+    // Log activity (do this early so raw payload is captured even if processing errors)
+    await logSubscriptionActivity(mapped.uid || null, mapped.eventType || type || null, payload || null, eventId || null);
+    // TEST/flat purchase
     if (type === 'TEST' || (payload?.product_id && (payload?.app_user_id || event?.app_user_id))) {
       const purchase = payload || event || {};
       const res = await createSubscriptionFromRevenuecat(purchase);
@@ -232,39 +331,82 @@ async function handleEvent(event) {
       return res;
     }
 
-    // Initial purchase or one-off purchase: try to create subscription when purchase object exists
+    // INITIAL_PURCHASE
     if (/initial_purchase|INITIAL_PURCHASE|INITIAL_PURCHASE_EVENT|INITIAL_PURCHASED|FIRST_PURCHASE/i.test(type) || payload?.purchase) {
-      const purchase = payload?.purchase || payload?.transaction || payload || {};
+      const purchase = Object.assign({}, payload?.purchase || payload || {});
+      purchase.app_user_id = mapped.uid || purchase.app_user_id;
+      purchase.product_id = mapped.revenuecatSubscriptionId || purchase.product_id;
+      purchase.transaction_id = mapped.transaction_id || purchase.transaction_id;
+      purchase.purchased_at_ms = mapped.purchased_at_ms || purchase.purchased_at_ms;
+      purchase.expiration_at_ms = mapped.expiration_at_ms || purchase.expiration_at_ms;
+
       const res = await createSubscriptionFromRevenuecat(purchase);
-      console.log('[revenuecatWebhook.service] initial purchase processed', { eventId, userId: purchase?.app_user_id || null });
+      console.log('[revenuecatWebhook.service] initial purchase processed', { eventId, userId: mapped.uid || null });
       return res;
     }
 
-    // Renewal or subscription renewed: extend by 30 days
+    // RENEWAL
     if (/renewal|RENEWAL|SUBSCRIPTION_RENEWED|RENEWED/i.test(type) || payload?.renewal) {
-      const appUserId = event?.app_user_id || payload?.app_user_id || payload?.subscriber?.app_user_id || null;
-      const processorId = payload?.transaction?.id || payload?.transaction_id || payload?.purchase?.id || null;
+      const appUserId = mapped.uid || event?.app_user_id || payload?.app_user_id || payload?.subscriber?.app_user_id || null;
+      const processorId = mapped.transaction_id || payload?.transaction?.id || payload?.transaction_id || payload?.purchase?.id || null;
       if (appUserId) {
         const uid = await getUserIdByAppUserId(appUserId);
         if (uid) {
-          const ok = await extendSubscriptionByUserId(uid, 30, processorId);
-          console.log('[revenuecatWebhook.service] renewal processed', { eventId, appUserId, uid, skipped: !ok });
-          return ok;
+          // If expiration timestamp provided, prefer it; otherwise extend by default 30 days.
+          const db = await getFirestore();
+          const admin = require('firebase-admin');
+          const now = admin.firestore.Timestamp.now();
+
+          const q = db.collection('subscriptions').where('uid', '==', uid).limit(1);
+          const snap = await q.get();
+          if (!snap.empty) {
+            const doc = snap.docs[0];
+            const data = doc.data();
+            // Idempotency: if we've already processed this transaction, ignore
+            if (processorId && data.lastProcessedPaymentId && data.lastProcessedPaymentId === processorId) {
+              console.log('[revenuecatWebhook.service] renewal ignored (idempotent)', { uid, processorId });
+              return { skipped: true };
+            }
+
+            const updates = { lastPaymentStatus: 'success', retryCount: 0, updatedAt: now, processor: 'revenuecat' };
+            if (processorId) updates.lastProcessedPaymentId = processorId;
+            if (mapped.expiration_at_ms) updates.endDate = tsFromMs(mapped.expiration_at_ms);
+            else {
+              // extend by 30 days from current end or now
+              const currentEnd = data.endDate ? data.endDate.toDate() : new Date();
+              const base = currentEnd < new Date() ? new Date() : currentEnd;
+              updates.endDate = admin.firestore.Timestamp.fromDate(new Date(base.getTime() + 30 * DAY_MS));
+            }
+
+            await doc.ref.update(updates);
+            // sync user isSubscribed
+            await db.collection('users').doc(String(uid)).set({ isSubscribed: true, updatedAt: admin.firestore.Timestamp.now() }, { merge: true });
+
+            console.log('[revenuecatWebhook.service] renewal processed', { eventId, appUserId, uid });
+            return { ok: true };
+          }
         }
       }
       throw new Error('renewal event missing app_user_id or mapping');
     }
 
-    // Cancellation
+    // CANCELLATION: do NOT set inactive; keep status active and just log/update lastPaymentStatus
     if (/cancel|CANCEL|CANCELLATION|UNSUBSCRIBED/i.test(type) || payload?.cancellation) {
-      const revSubId = payload?.subscription_id || payload?.revenuecat_subscription_id || payload?.product_id || null;
+      const revSubId = mapped.revenuecatSubscriptionId || payload?.subscription_id || payload?.revenuecat_subscription_id || payload?.product_id || null;
+      const appUserId = mapped.uid || event?.app_user_id || payload?.app_user_id || payload?.subscriber?.app_user_id || null;
+
       if (revSubId) {
-        const ok = await cancelSubscriptionsByRevenuecatSubscriptionId(revSubId);
-        console.log('[revenuecatWebhook.service] cancellation processed', { eventId, revSubId, skipped: !ok });
-        return ok;
+        const db = await getFirestore();
+        const admin = require('firebase-admin');
+        const now = admin.firestore.Timestamp.now();
+        const q = await db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId).get();
+        const ops = [];
+        q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
+        await Promise.all(ops);
+        console.log('[revenuecatWebhook.service] cancellation received (kept active)', { eventId, revSubId });
+        return true;
       }
 
-      const appUserId = event?.app_user_id || payload?.app_user_id || payload?.subscriber?.app_user_id || null;
       if (appUserId) {
         const uid = await getUserIdByAppUserId(appUserId);
         if (uid) {
@@ -273,9 +415,9 @@ async function handleEvent(event) {
           const now = admin.firestore.Timestamp.now();
           const q = await db.collection('subscriptions').where('uid', '==', uid).get();
           const ops = [];
-          q.forEach((doc) => ops.push(doc.ref.update({ status: 'cancelled', updatedAt: now })));
+          q.forEach((doc) => ops.push(doc.ref.update({ lastPaymentStatus: 'cancelled', updatedAt: now })));
           await Promise.all(ops);
-          console.log('[revenuecatWebhook.service] cancellation processed by user', { eventId, uid });
+          console.log('[revenuecatWebhook.service] cancellation received by user (kept active)', { eventId, uid });
           return true;
         }
       }
@@ -283,6 +425,134 @@ async function handleEvent(event) {
       throw new Error('cancellation event missing identifiers');
     }
 
+    // EXPIRATION: set status inactive
+    if (/expiration|EXPIRED|EXPIRATION|SUBSCRIPTION_EXPIRED/i.test(type) || payload?.expiration) {
+      const appUserId = mapped.uid || payload?.app_user_id || event?.app_user_id || null;
+      const revSubId = mapped.revenuecatSubscriptionId || payload?.product_id || null;
+      const db = await getFirestore();
+      const admin = require('firebase-admin');
+      const now = admin.firestore.Timestamp.now();
+
+      const applyInactive = async (q) => {
+        const snap = await q.get();
+        const ops = [];
+        snap.forEach((doc) => ops.push(doc.ref.update({ status: 'inactive', lastPaymentStatus: 'expired', updatedAt: now })));
+        await Promise.all(ops);
+      };
+
+      if (revSubId) {
+        await applyInactive(db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId));
+        console.log('[revenuecatWebhook.service] expiration processed by revSubId', { eventId, revSubId });
+        return true;
+      }
+
+      if (appUserId) {
+        const uid = await getUserIdByAppUserId(appUserId);
+        if (uid) {
+          await applyInactive(db.collection('subscriptions').where('uid', '==', uid));
+          console.log('[revenuecatWebhook.service] expiration processed by uid', { eventId, uid });
+          // sync users table
+          await db.collection('users').doc(String(uid)).set({ isSubscribed: false, updatedAt: now }, { merge: true });
+          return true;
+        }
+      }
+
+      throw new Error('expiration event missing identifiers');
+    }
+
+    // BILLING_ISSUE: keep active, mark retrying and increment retryCount
+    if (/billing_issue|BILLING_ISSUE|PAYMENT_FAILED|BILLING_PROBLEM/i.test(type) || payload?.billing_issue) {
+      const appUserId = mapped.uid || payload?.app_user_id || event?.app_user_id || null;
+      const revSubId = mapped.revenuecatSubscriptionId || payload?.product_id || null;
+      const db = await getFirestore();
+      const admin = require('firebase-admin');
+      const now = admin.firestore.Timestamp.now();
+
+      const applyRetry = async (q) => {
+        const snap = await q.get();
+        const ops = [];
+        snap.forEach((doc) => {
+          const d = doc.data();
+          const nextRetry = (d.retryCount || 0) + 1;
+          ops.push(doc.ref.update({ lastPaymentStatus: 'retrying', retryCount: nextRetry, updatedAt: now }));
+        });
+        await Promise.all(ops);
+      };
+
+      if (revSubId) {
+        await applyRetry(db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId));
+        console.log('[revenuecatWebhook.service] billing issue applied by revSubId', { eventId, revSubId });
+        return true;
+      }
+
+      if (appUserId) {
+        const uid = await getUserIdByAppUserId(appUserId);
+        if (uid) {
+          await applyRetry(db.collection('subscriptions').where('uid', '==', uid));
+          console.log('[revenuecatWebhook.service] billing issue applied by uid', { eventId, uid });
+          return true;
+        }
+      }
+
+      throw new Error('billing issue event missing identifiers');
+    }
+
+    // UNCANCELLATION: reactivate
+    if (/uncancel|UNCANCELLATION|UNCANCELLED|REACTIVATION/i.test(type) || payload?.uncancellation) {
+      const appUserId = mapped.uid || payload?.app_user_id || event?.app_user_id || null;
+      const revSubId = mapped.revenuecatSubscriptionId || payload?.product_id || null;
+      const db = await getFirestore();
+      const admin = require('firebase-admin');
+      const now = admin.firestore.Timestamp.now();
+
+      const applyUncancel = async (q) => {
+        const snap = await q.get();
+        const ops = [];
+        snap.forEach((doc) => ops.push(doc.ref.update({ status: 'active', lastPaymentStatus: 'success', updatedAt: now })));
+        await Promise.all(ops);
+      };
+
+      if (revSubId) {
+        await applyUncancel(db.collection('subscriptions').where('revenuecatSubscriptionId', '==', revSubId));
+        return true;
+      }
+      if (appUserId) {
+        const uid = await getUserIdByAppUserId(appUserId);
+        if (uid) {
+          await applyUncancel(db.collection('subscriptions').where('uid', '==', uid));
+          return true;
+        }
+      }
+    }
+
+    // PRODUCT_CHANGE: update revenuecatSubscriptionId
+    if (/product_change|PRODUCT_CHANGE|PRODUCT_SWITCH|UPGRADE|DOWNGRADE/i.test(type) || payload?.product_change) {
+      const appUserId = mapped.uid || payload?.app_user_id || event?.app_user_id || null;
+      const newProductId = mapped.revenuecatSubscriptionId || payload?.new_product_id || payload?.product_id || null;
+      if (!newProductId) throw new Error('product_change event missing new product id');
+
+      const db = await getFirestore();
+      const admin = require('firebase-admin');
+      const now = admin.firestore.Timestamp.now();
+      if (appUserId) {
+        const uid = await getUserIdByAppUserId(appUserId);
+        if (uid) {
+          const snap = await db.collection('subscriptions').where('uid', '==', uid).get();
+          const ops = [];
+          snap.forEach((doc) => ops.push(doc.ref.update({ revenuecatSubscriptionId: newProductId, updatedAt: now })));
+          await Promise.all(ops);
+          return true;
+        }
+      }
+      // fallback: try by transaction/product
+      const q = await db.collection('subscriptions').where('revenuecatTransactionId', '==', mapped.transaction_id).get();
+      const ops = [];
+      q.forEach((doc) => ops.push(doc.ref.update({ revenuecatSubscriptionId: newProductId, updatedAt: admin.firestore.Timestamp.now() })));
+      await Promise.all(ops);
+      return true;
+    }
+
+    // Unhandled event types: log and return null
     console.log('[revenuecatWebhook.service] unhandled event type', type);
     return null;
   } catch (e) {
