@@ -27,7 +27,7 @@ function resolveStatus(current, incoming, endDate) {
   if (incoming === 'cancelled') return 'cancelled';
 
   if (incoming === 'active') {
-    if (current === 'cancelled' && endDate > now) {
+    if (current === 'cancelled' && endDate && endDate > now) {
       return 'cancelled';
     }
     return 'active';
@@ -45,21 +45,75 @@ function applyPriority(current, next) {
 
 // ---------------- DB ----------------
 
-async function db() {
+async function getDB() {
   return initFirebaseAdmin().firestore();
 }
 
+// ---------------- ACTIVITY LOG (FINAL SCHEMA) ----------------
+
+async function logSubscriptionActivity(event) {
+  try {
+    const db = await getDB();
+    const admin = require('firebase-admin');
+
+    const uid =
+      event.app_user_id ||
+      (event.aliases && event.aliases[1]) ||
+      null;
+
+    await db.collection('subscriptionActivity').add({
+      eventId: event.id || null,
+      eventType: event.type || null,
+      uid: uid,
+      rawInput: event,
+      time: admin.firestore.Timestamp.now(),
+    });
+  } catch (e) {
+    console.warn('[subscriptionActivity] log failed:', e.message);
+  }
+}
+
+// ---------------- IDEMPOTENCY ----------------
+
+async function isEventProcessed(eventId) {
+  if (!eventId) return false;
+
+  const db = await getDB();
+  const doc = await db.collection('webhookEvents').doc(eventId).get();
+  return doc.exists;
+}
+
+async function markEventProcessed(eventId, type) {
+  if (!eventId) return;
+
+  const db = await getDB();
+  const admin = require('firebase-admin');
+
+  await db.collection('webhookEvents').doc(eventId).set(
+    {
+      processed: true,
+      type,
+      processedAt: admin.firestore.Timestamp.now(),
+    },
+    { merge: true }
+  );
+}
+
+// ---------------- USER FLAG ----------------
+
 async function updateUser(uid, status, endDate) {
-  const firestore = await db();
+  const db = await getDB();
   const admin = require('firebase-admin');
 
   const now = new Date();
 
   const isSubscribed =
     status === 'active' ||
-    (status === 'cancelled' && endDate?.toDate() > now);
+    (status === 'cancelled' &&
+      endDate &&
+      endDate.toDate() > now);
 
-  await firestore.collection('users').doc(uid).set(
+  await db.collection('users').doc(String(uid)).set(
     {
       isSubscribed,
       updatedAt: admin.firestore.Timestamp.now(),
@@ -68,40 +122,31 @@ async function updateUser(uid, status, endDate) {
   );
 }
 
-// ---------------- CORE ----------------
+// ---------------- CORE UPSERT ----------------
 
-async function upsert(rcEvent, incomingStatus) {
-  const firestore = await db();
+async function upsertSubscription(event, incomingStatus) {
+  const db = await getDB();
   const admin = require('firebase-admin');
 
-  const {
-    app_user_id,
-    product_id,
-    transaction_id,
-    original_transaction_id,
-    purchased_at_ms,
-    expiration_at_ms,
-    price,
-    currency,
-    renewal_number,
-    environment,
-  } = rcEvent;
+  const uid =
+    event.app_user_id ||
+    (event.aliases && event.aliases[1]) ||
+    null;
 
-  const uid = app_user_id;
-
-  // ✅ CRITICAL FIX
-  const subscriptionId = original_transaction_id;
+  const subscriptionId = event.original_transaction_id; // ✅ critical
+  const transactionId = event.transaction_id;
 
   const startDate =
-    ts(purchased_at_ms) || admin.firestore.Timestamp.now();
+    ts(event.purchased_at_ms) ||
+    admin.firestore.Timestamp.now();
 
   const endDate =
-    ts(expiration_at_ms) ||
+    ts(event.expiration_at_ms) ||
     admin.firestore.Timestamp.fromDate(
       new Date(Date.now() + 30 * DAY_MS)
     );
 
-  const ref = firestore.collection('subscriptions');
+  const ref = db.collection('subscriptions');
 
   const q = await ref
     .where('revenuecatSubscriptionId', '==', subscriptionId)
@@ -112,8 +157,8 @@ async function upsert(rcEvent, incomingStatus) {
     const doc = q.docs[0];
     const data = doc.data();
 
-    // Idempotency
-    if (data.lastProcessedPaymentId === transaction_id) {
+    // Idempotency (transaction level)
+    if (data.lastProcessedPaymentId === transactionId) {
       return data;
     }
 
@@ -127,24 +172,28 @@ async function upsert(rcEvent, incomingStatus) {
 
     const updates = {
       status: newStatus,
-      revenuecatTransactionId: transaction_id,
       revenuecatSubscriptionId: subscriptionId,
-      lastProcessedPaymentId: transaction_id,
+      revenuecatTransactionId: transactionId,
+      lastProcessedPaymentId: transactionId,
+
       lastPaymentStatus:
         newStatus === 'inactive'
           ? 'expired'
           : newStatus === 'cancelled'
           ? 'cancelled'
           : 'success',
+
       startDate,
       endDate,
-      amount: price,
-      currency,
-      renewalNumber: renewal_number,
-      environment,
+
+      amount: event.price || null,
+      currency: event.currency || null,
+      renewalNumber: event.renewal_number || null,
+      environment: event.environment || null,
+
       processor: 'revenuecat',
-      updatedAt: admin.firestore.Timestamp.now(),
       retryCount: 0,
+      updatedAt: admin.firestore.Timestamp.now(),
     };
 
     await doc.ref.update(updates);
@@ -159,14 +208,17 @@ async function upsert(rcEvent, incomingStatus) {
     uid,
     status: incomingStatus,
     revenuecatSubscriptionId: subscriptionId,
-    revenuecatTransactionId: transaction_id,
-    lastProcessedPaymentId: transaction_id,
+    revenuecatTransactionId: transactionId,
+    lastProcessedPaymentId: transactionId,
+
     startDate,
     endDate,
-    amount: price,
-    currency,
-    renewalNumber: renewal_number,
-    environment,
+
+    amount: event.price || null,
+    currency: event.currency || null,
+    renewalNumber: event.renewal_number || null,
+    environment: event.environment || null,
+
     processor: 'revenuecat',
     lastPaymentStatus: 'success',
     retryCount: 0,
@@ -180,40 +232,54 @@ async function upsert(rcEvent, incomingStatus) {
   return { id: newRef.id, ...payload };
 }
 
-// ---------------- HANDLER ----------------
+// ---------------- MAIN HANDLER ----------------
 
 async function handleEvent(body) {
   if (!body?.event) {
-    throw new Error('Invalid RevenueCat webhook');
+    throw new Error('Invalid RevenueCat webhook format');
   }
 
   const e = body.event;
 
+  // ✅ ALWAYS LOG FIRST (your required schema)
+  await logSubscriptionActivity(e);
+
+  // ✅ Idempotency (event level)
+  if (await isEventProcessed(e.id)) {
+    console.log('Duplicate event skipped:', e.id);
+    return { skipped: true };
+  }
+
   console.log('[RC EVENT]', e.type, e.id);
+
+  let result = null;
 
   switch (e.type) {
     case 'INITIAL_PURCHASE':
-      return upsert(e, 'active');
+      result = await upsertSubscription(e, 'active');
+      break;
 
     case 'RENEWAL':
-      return upsert(e, 'active');
+      result = await upsertSubscription(e, 'active');
+      break;
 
     case 'PRODUCT_CHANGE':
-      return upsert(e, 'active');
-
     case 'UNCANCELLATION':
-      return upsert(e, 'active');
+      result = await upsertSubscription(e, 'active');
+      break;
 
     case 'CANCELLATION':
-      return upsert(e, 'cancelled');
+      result = await upsertSubscription(e, 'cancelled');
+      break;
 
     case 'EXPIRATION':
-      return upsert(e, 'inactive');
+      result = await upsertSubscription(e, 'inactive');
+      break;
 
     case 'BILLING_ISSUE': {
-      const firestore = await db();
+      const db = await getDB();
 
-      const q = await firestore
+      const q = await db
         .collection('subscriptions')
         .where(
           'revenuecatSubscriptionId',
@@ -230,13 +296,21 @@ async function handleEvent(body) {
         });
       });
 
-      return true;
+      result = true;
+      break;
     }
 
     default:
       console.log('Unhandled RC event:', e.type);
-      return null;
+      result = null;
   }
+
+  // ✅ mark processed
+  await markEventProcessed(e.id, e.type);
+
+  return result;
 }
 
-module.exports = { handleEvent };
+module.exports = {
+  handleEvent,
+};
