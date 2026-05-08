@@ -133,7 +133,8 @@ async function upsertSubscription(event, incomingStatus) {
     (event.aliases && event.aliases[1]) ||
     null;
 
-  const subscriptionId = event.original_transaction_id; // ✅ critical
+  // Prefer `product_id` for RevenueCat subscription identifier, fall back to original_transaction_id
+  const subscriptionId = event.product_id || event.original_transaction_id; // ✅ critical
   const transactionId = event.transaction_id;
 
   const startDate =
@@ -284,7 +285,7 @@ async function handleEvent(body) {
         .where(
           'revenuecatSubscriptionId',
           '==',
-          e.original_transaction_id
+          e.product_id || e.original_transaction_id
         )
         .get();
 
