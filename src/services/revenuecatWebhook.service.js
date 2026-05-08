@@ -38,6 +38,8 @@ function resolveStatus(current, incoming, endDate) {
 
 function applyPriority(current, next) {
   if (!current) return next;
+  // Allow re-subscription: expired users can renew (inactive → active)
+  if (current === 'inactive' && next === 'active') return 'active';
   return STATUS_PRIORITY[current] > STATUS_PRIORITY[next]
     ? current
     : next;
@@ -158,8 +160,10 @@ async function upsertSubscription(event, incomingStatus) {
     const doc = q.docs[0];
     const data = doc.data();
 
-    // Idempotency (transaction level)
-    if (data.lastProcessedPaymentId === transactionId) {
+    // Idempotency (transaction level) — skip for inactive (EXPIRATION) since
+    // RevenueCat reuses the original transaction_id on EXPIRATION events.
+    // Event-level idempotency in handleEvent already guards against true duplicates.
+    if (data.lastProcessedPaymentId === transactionId && incomingStatus !== 'inactive') {
       return data;
     }
 
