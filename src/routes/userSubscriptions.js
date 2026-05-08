@@ -3,226 +3,146 @@ const initFirebaseAdmin = require('../lib/firebaseAdmin');
 
 const router = express.Router();
 
-/**
- * Verify webhook (recommended)
- */
-const verifyWebhook = (req) => {
-  const authHeader = req.headers['authorization'];
-  const expected = process.env.REVENUECAT_WEBHOOK_SECRET;
-  if (!expected) return true;
-  return authHeader === expected;
-};
-
-/**
- * Map RevenueCat event → subscription status
- */
-const mapEventToStatus = (type) => {
-  switch (type) {
-    case 'INITIAL_PURCHASE':
-    case 'RENEWAL':
-    case 'UNCANCELLATION':
-      return 'active';
-
-    case 'CANCELLATION':
-      return 'cancelled';
-
-    case 'EXPIRATION':
-      return 'inactive';
-
-    case 'BILLING_ISSUE':
-      return 'active'; // still active during retry period
-
-    default:
-      return null;
-  }
-};
-
-/**
- * Map payment status
- */
-const mapPaymentStatus = (type) => {
-  switch (type) {
-    case 'INITIAL_PURCHASE':
-    case 'RENEWAL':
-      return 'success';
-
-    case 'BILLING_ISSUE':
-      return 'failed';
-
-    case 'EXPIRATION':
-      return 'expired';
-
-    default:
-      return 'success';
-  }
-};
-
-/**
- * Access logic
- */
-const hasAccess = (status) => {
-  return status === 'active' || status === 'cancelled';
-};
-
-
-// POST /webhook/revenuecat
-router.post('/revenuecat', async (req, res) => {
+// POST /sync
+// Body: { uid, revenuecatSubscriptionId?, status?, startDate?, endDate?, revenuecatTransactionId?, lastProcessedPaymentId?, amount? }
+// Compares frontend-provided subscription data with DB (webhook truth). Prefers webhook data.
+router.post('/sync', async (req, res) => {
   const admin = initFirebaseAdmin();
-  if (!admin) return res.status(500).send('Firebase not initialized');
+  if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });
 
   try {
-    if (!verifyWebhook(req)) {
-      return res.status(401).send('Unauthorized');
-    }
-
-    const event = req.body?.event;
-    if (!event) return res.status(400).send('Missing event');
-
-    const {
-      id: eventId,
-      type,
-      app_user_id: uid,
-      product_id,
-      original_transaction_id,
-      transaction_id,
-      expiration_at_ms,
-      purchased_at_ms,
-      price_in_purchased_currency,
-    } = event;
-
-    if (!uid) return res.status(400).send('Missing uid');
+    const incoming = req.body || {};
+    const uid = typeof incoming.uid === 'string' && incoming.uid.trim() !== '' ? incoming.uid.trim() : undefined;
+    if (!uid) return res.status(400).json({ ok: false, error: 'Missing uid in body' });
 
     const db = admin.firestore();
+    let q = db.collection('subscriptions').where('uid', '==', uid);
+    if (incoming.revenuecatSubscriptionId) q = db.collection('subscriptions').where('revenuecatSubscriptionId', '==', incoming.revenuecatSubscriptionId);
 
-    /**
-     * Idempotency check
-     */
-    const eventRef = db.collection('webhookEvents').doc(eventId);
-    const existing = await eventRef.get();
+    const snap = await q.limit(1).get();
+    if (snap.empty) return res.status(404).json({ ok: false, error: 'subscription not found' });
 
-    if (existing.exists) {
-      return res.status(200).send('Already processed');
-    }
+    const doc = snap.docs[0];
+    const data = doc.data();
 
-    /**
-     * Fetch subscription
-     */
-    const snap = await db
-      .collection('subscriptions')
-      .where('uid', '==', uid)
-      .limit(1)
-      .get();
+    // Compute canonical status (do not trust incoming status blindly)
+    const now = Date.now();
+    const endMs = data.endDate && data.endDate.toDate ? data.endDate.toDate().getTime() : (data.endDate ? new Date(data.endDate).getTime() : null);
+    const computedStatus = endMs && now > endMs ? 'inactive' : (data.status || 'active');
 
-    let subRef;
-    let existingData = {};
-
-    if (snap.empty) {
-      subRef = db.collection('subscriptions').doc();
-    } else {
-      subRef = snap.docs[0].ref;
-      existingData = snap.docs[0].data();
-    }
-
-    /**
-     * Compute status + payment state
-     */
-    const newStatus = mapEventToStatus(type);
-    const paymentStatus = mapPaymentStatus(type);
-
-    /**
-     * Retry logic
-     */
-    let retryCount = existingData.retryCount || 0;
-
-    if (type === 'BILLING_ISSUE') {
-      retryCount += 1;
-    } else if (type === 'RENEWAL' || type === 'INITIAL_PURCHASE') {
-      retryCount = 0;
-    }
-
-    /**
-     * Build update (aligned with your schema)
-     */
-    const update = {
-      uid,
-      processor: 'revenuecat',
-
-      revenuecatSubscriptionId: original_transaction_id,
-      revenuecatTransactionId: transaction_id,
-      lastProcessedPaymentId: transaction_id,
-
-      lastPaymentStatus: paymentStatus,
-      retryCount,
-
-      updatedAt: admin.firestore.Timestamp.now(),
+    // Compare fields and collect discrepancies
+    const compareField = (k, incomingVal, dbVal) => {
+      if (incomingVal == null && dbVal == null) return null;
+      // normalize Firestore Timestamps to millis for comparison
+      if (dbVal && dbVal.toDate) dbVal = dbVal.toDate().getTime();
+      if (incomingVal && typeof incomingVal === 'string' && /^\d+$/.test(incomingVal)) incomingVal = Number(incomingVal);
+      if (incomingVal !== dbVal) return { field: k, incoming: incomingVal, db: dbVal };
+      return null;
     };
 
-    if (price_in_purchased_currency != null) {
-      update.amount = price_in_purchased_currency;
-    }
-
-    if (purchased_at_ms) {
-      update.startDate = admin.firestore.Timestamp.fromMillis(purchased_at_ms);
-    }
-
-    if (expiration_at_ms) {
-      update.endDate = admin.firestore.Timestamp.fromMillis(expiration_at_ms);
-    }
-
-    if (newStatus) {
-      update.status = newStatus;
-    }
-
-    /**
-     * Write to Firestore
-     */
-    await subRef.set(update, { merge: true });
-
-    /**
-     * Final status for access
-     */
-    const finalStatus = newStatus || existingData.status || 'active';
-
-    /**
-     * Sync users collection
-     */
-    await db.collection('users').doc(uid).set(
-      {
-        isSubscribed: hasAccess(finalStatus),
-        subscriptionStatus: finalStatus,
-        updatedAt: admin.firestore.Timestamp.now(),
-      },
-      { merge: true }
-    );
-
-    /**
-     * Activity log
-     */
-    await db.collection('subscriptionActivity').add({
-      uid,
-      type,
-      eventId,
-      status: finalStatus,
-      paymentStatus,
-      transactionId: transaction_id,
-      time: admin.firestore.Timestamp.now(),
+    const fieldsToCheck = ['status', 'revenuecatSubscriptionId', 'revenuecatTransactionId', 'lastProcessedPaymentId', 'amount'];
+    const discrepancies = [];
+    fieldsToCheck.forEach((f) => {
+      const inc = incoming[f];
+      const dbv = data[f];
+      const diff = compareField(f, inc, dbv);
+      if (diff) discrepancies.push(diff);
     });
+    // check dates
+    const d1 = compareField('startDate', incoming.startDate, data.startDate);
+    const d2 = compareField('endDate', incoming.endDate, data.endDate);
+    if (d1) discrepancies.push(d1);
+    if (d2) discrepancies.push(d2);
 
-    /**
-     * Mark processed
-     */
-    await eventRef.set({
-      uid,
-      type,
-      processedAt: admin.firestore.Timestamp.now(),
-    });
+    // Always prefer DB/webhook truth. Optionally log discrepancy
+    if (discrepancies.length) {
+      console.log('[userSubscriptions.sync] discrepancy for uid', uid, { discrepancies });
+    }
 
-    return res.status(200).send('OK');
+    // Ensure users table reflects subscription computed status
+    try {
+      await db.collection('users').doc(String(uid)).set({ isSubscribed: computedStatus === 'active', updatedAt: admin.firestore.Timestamp.now() }, { merge: true });
+    } catch (e) {
+      console.warn('[userSubscriptions.sync] failed to sync users table', e);
+    }
 
+    const out = { id: doc.id, uid: data.uid, status: computedStatus, startDate: data.startDate, endDate: data.endDate, revenuecatSubscriptionId: data.revenuecatSubscriptionId, revenuecatTransactionId: data.revenuecatTransactionId, lastProcessedPaymentId: data.lastProcessedPaymentId, amount: data.amount, updatedAt: data.updatedAt, discrepancies };
+    return res.json({ ok: true, source: 'webhook', item: out });
   } catch (err) {
-    console.error('[Webhook Error]', err);
-    return res.status(500).send('Internal Server Error');
+    console.error('[userSubscriptions] POST /sync error', err);
+    return res.status(500).json({ ok: false, error: String(err) });
   }
 });
 
 module.exports = router;
+
+// GET /:uid
+// Returns canonical subscription details for a specific user (prefers webhook/DB data)
+router.get('/:uid', async (req, res) => {
+  const admin = initFirebaseAdmin();
+  if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });
+
+  try {
+    const uid = req.params.uid || req.query.uid;
+    if (!uid) return res.status(400).json({ ok: false, error: 'Missing uid in path or query' });
+
+    const db = admin.firestore();
+    let q = db.collection('subscriptions').where('uid', '==', uid);
+    if (req.query.revenuecatSubscriptionId) q = db.collection('subscriptions').where('revenuecatSubscriptionId', '==', req.query.revenuecatSubscriptionId);
+
+    const snap = await q.limit(1).get();
+    if (snap.empty) return res.status(404).json({ ok: false, error: 'subscription not found' });
+
+    const doc = snap.docs[0];
+    const data = doc.data();
+
+    const now = Date.now();
+    const endMs = data.endDate && data.endDate.toDate ? data.endDate.toDate().getTime() : (data.endDate ? new Date(data.endDate).getTime() : null);
+    const computedStatus = endMs && now > endMs ? 'inactive' : (data.status || 'active');
+
+    const item = {
+      id: doc.id,
+      uid: data.uid,
+      status: computedStatus,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      revenuecatSubscriptionId: data.revenuecatSubscriptionId,
+      revenuecatTransactionId: data.revenuecatTransactionId,
+      lastProcessedPaymentId: data.lastProcessedPaymentId,
+      amount: data.amount,
+      retryCount: data.retryCount || 0,
+      updatedAt: data.updatedAt,
+    };
+
+    return res.json({ ok: true, source: 'webhook', item });
+  } catch (err) {
+    console.error('[userSubscriptions] GET /:uid error', err);
+    return res.status(500).json({ ok: false, error: String(err) });
+  }
+});
+
+// GET /:uid/activity
+// Returns recent subscription activity entries for a user (from `subscriptionActivity` collection)
+router.get('/:uid/activity', async (req, res) => {
+  const admin = initFirebaseAdmin();
+  if (!admin) return res.status(500).json({ ok: false, error: 'Firebase Admin not initialized' });
+
+  try {
+    const uid = req.params.uid || req.query.uid;
+    if (!uid) return res.status(400).json({ ok: false, error: 'Missing uid in path or query' });
+
+    const db = admin.firestore();
+    const limit = (req.query.limit && Number.isFinite(Number(req.query.limit))) ? Math.min(200, Math.max(1, Number(req.query.limit))) : 50;
+
+    // Query activity by uid, most recent first
+    let q = db.collection('subscriptionActivity').where('uid', '==', uid).orderBy('time', 'desc');
+    const snap = await q.limit(limit).get();
+    if (snap.empty) return res.json({ ok: true, items: [] });
+
+    const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    return res.json({ ok: true, source: 'webhook', items });
+  } catch (err) {
+    console.error('[userSubscriptions] GET /:uid/activity error', err);
+    return res.status(500).json({ ok: false, error: String(err) });
+  }
+});
